@@ -5,7 +5,7 @@
           <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
               <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
                   
-              </h1>
+              </h1> 
               <form class="space-y-4 md:space-y-6" action="#">
                   <div>
                       <label for="id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">아이디</label>
