@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.averedu.averedu_sehan.prj.sys.mapper.CommonUserMapper">
+
+  <select id="selectCommonUserList" parameterType="map" resultType="com.averedu.averedu_sehan.prj.sys.vo.Csys130VO">
+    SELECT
+      LOGIN_ID,
+      PWD,
+      PWD_ERR_FREQ,
+      PWD_CHG_DTTM,
+      USER_ST_CD,
+      FL_LOGIN_DTTM,
+      PERS_NO
+    FROM CSYS130
+    <where>
+      <if test="loginId != null and loginId != ''">
+        AND LOGIN_ID = #{loginId}
+      </if>
+      <if test="userName != null and userName != ''">
+        AND USER_NAME = #{userName}
+      </if>
+      <if test="useYn != null and useYn != ''">
+        AND USE_YN = #{useYn}
+      </if>
+    </where>
+  </select>
+
+</mapper>
