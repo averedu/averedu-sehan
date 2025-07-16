@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<mapper namespace="com.averedu.averedu_sehan.mapper.login.LoginMapper">
+
+    <select id="login" resultType="com.averedu.averedu_sehan.vo.user.UserVO" parameterType="com.averedu.averedu_sehan.vo.user.UserVO">
+        SELECT 
+        	 LOGIN_ID,
+        	 PWD
+        FROM COM.CSYS130 
+        WHERE LOGIN_ID = #{id} AND PWD = #{pwd}
+ 	</select>
+</mapper>

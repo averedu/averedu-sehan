@@ -9,11 +9,11 @@
               <form class="space-y-4 md:space-y-6" action="#">
                   <div>
                       <label for="id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">아이디</label>
-                      <input type="id" name="id" id="id"  value="" class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="아이디를 입력해주세요." required="">
+                      <input v-model="login.id" type="id" name="id" id="id"  value="" class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="아이디를 입력해주세요." required="">
                   </div>
                   <div>
                       <label for="password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">패스워드</label>
-                      <input type="password" name="password" id="password" value=""  placeholder="••••••••" class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required="">
+                      <input v-model="login.pwd" type="password" name="password" id="password" value=""  placeholder="••••••••" class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required="">
                   </div>
                   <!--
                   <div class="flex items-center justify-between">
@@ -29,7 +29,7 @@
                   </div>
                   -->
                   <button type="button" class="py-2.5 px-5 me-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
-                  @click="login">로그인</button>
+                  @click="loginFun">로그인</button>
                   <!--
                   <p class="text-sm font-light text-gray-500 dark:text-gray-400">
                       <a href="#" class="font-medium text-primary-600 hover:underline dark:text-primary-500">회원가입</a>
@@ -44,10 +44,46 @@
 
 <script setup>
 import { useRouter } from "vue-router";
+import { ref } from 'vue';
+import axios from 'axios';
+
 const router = useRouter();
 
-const login = () => {
-    router.push('/main')
+let login = ref({
+    id : '',
+    pwd : ''
+})
+
+
+
+const loginFun = () => {
+   
+    if(login.value.id === ''){
+        alert('아이디를 입력 해주세요.');
+        return false;
+    }
+
+    if(login.value.pwd === ''){
+        alert('패스워드를 입력 해주세요.');
+        return false;
+    }
+
+    const obj = Object.assign({}, login.value);
+
+     axios
+    .post("/restApi/login", obj) 
+    .then(restApi => {
+      console.log('restApi : ', restApi);
+      if (restApi.statusCd === 200) {
+        router.push('/main');
+      }else{
+        alert(restApi.statusMsg);
+      }
+    })
+    .catch(error => {
+      console.log('login error', error);
+    })
+
 }
 </script>
 

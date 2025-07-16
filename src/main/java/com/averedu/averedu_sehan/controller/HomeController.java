@@ -1,4 +1,4 @@
-package controller;
+package com.averedu.averedu_sehan.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -8,6 +8,7 @@ public class HomeController {
 	
 	@GetMapping(value = "/")
 	public String index() {
-		return "index";
+		 // return "redirect:/index.html";
+		return "index.html";
 	}
 }
