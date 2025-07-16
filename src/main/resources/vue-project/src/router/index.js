@@ -18,12 +18,12 @@ const router = createRouter({
       component: MainView,
       children: [
         {
-          path: 'userMng',
+          path: '/userMng',
           name: '사용자관리',
           component: UserMngView,
         },
         {
-          path: 'deptCdMgmt',
+          path: '/deptCdMgmt',
           name: '부서코드관리',
           component: DeptCdMgmtView,
         },
