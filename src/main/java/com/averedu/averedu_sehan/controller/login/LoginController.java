@@ -22,8 +22,11 @@ public class LoginController {
 	@PostMapping("/login")
 	 public UserVO login(@RequestBody UserVO userVO, HttpSession session) {
 		UserVO loginVO = loginService.login(userVO);
+
 		if(loginVO.getStatusCd() == 200) {
 			SessionVO sessionVO = new SessionVO();
+			sessionVO.setLoginId(loginVO.getLoginId());
+			session.setAttribute("sessionInfo", sessionVO);
 		}
 		return loginVO;
 	 }

@@ -1,4 +1,6 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.averedu.averedu_sehan.mapper.login.LoginMapper">
 
     <select id="login" resultType="com.averedu.averedu_sehan.vo.user.UserVO" parameterType="com.averedu.averedu_sehan.vo.user.UserVO">
@@ -6,6 +8,6 @@
         	 LOGIN_ID,
         	 PWD
         FROM COM.CSYS130 
-        WHERE LOGIN_ID = #{id} AND PWD = #{pwd}
+        WHERE LOGIN_ID = #{loginId} AND PWD = #{pwd}
  	</select>
 </mapper>
