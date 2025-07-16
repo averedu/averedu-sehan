@@ -1,85 +1,51 @@
 <template>
   <div class="flex-1 overflow-y-auto p-6">
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-6">
-      <div class="bg-white dark:bg-[#252731] h-32 p-6 rounded-lg shadow-md md:col-span-1">
-        <label class="p-1"
-          >부서명<input
-            @keyup.enter="search()"
-            v-model="param.deptNm"
-            type="text"
-            class="mx-3 bg-gray-50 border border-gray-300 text-gray-900"
-        /></label>
-        <label class="p-1"
-          >부서코드<input
-            @keyup.enter="search()"
-            v-model="param.deptCd"
-            type="text"
-            class="mx-3 bg-gray-50 border border-gray-300 text-gray-900"
-        /></label>
-        <label class="p-1"
-          >부서ID<input
-            @keyup.enter="search()"
-            v-model="param.deptId"
-            class="mx-3 bg-gray-50 border border-gray-300 text-gray-900"
-        /></label>
-        <label class="p-1">
-          사용여부
-          <select
-            @change="search()"
-            v-model="param.useYn"
-            class="mx-3 p-1 mb-6 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500"
-          >
-            <option selected></option>
-            <option value="Y">사용</option>
-            <option value="N">미사용</option>
-          </select></label
-        ><br />
-        <label class="p-1"
-          >기관구분
-          <select
-            @change="search()"
-            v-model="param.breuFg"
-            class="mx-3 p-1 mb-6 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500"
-          >
-            <option selected></option>
-            <option value="Y">사용</option>
-            <option value="N">미사용</option>
-          </select></label
-        >
-        <label class="p-1"
-          >최종조직여부
-          <select
-            @change="search()"
-            v-model="param.flDeptYn"
-            class="mx-3 p-1 mb-6 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500"
-          >
-            <option selected></option>
-            <option value="Y">사용</option>
-            <option value="N">미사용</option>
-          </select></label
-        >
-        <label class="p-1"
-          >학사조직여부
-          <select
-            @change="search()"
-            v-model="param.shafFormaYn"
-            class="mx-3 p-1 mb-6 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500"
-          >
-            <option selected></option>
-            <option value="Y">사용</option>
-            <option value="N">미사용</option>
-          </select></label
-        >
-        <button
-          @click="search()"
-          id="searchBtn"
-          type="button"
-          class="float-right text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
-        >
-          조회
-        </button>
-      </div>
-    </div>
+    <SearchBox :onSearch="search" :colCount="7">
+      <template #col1>
+        <label class="search-label">부서명</label>
+        <input @keyup.enter="search" v-model="param.deptNm" type="text" class="search-input" />
+      </template>
+      <template #col2>
+        <label class="search-label">부서코드</label>
+        <input @keyup.enter="search" v-model="param.deptCd" type="text" class="search-input" />
+      </template>
+      <template #col3>
+        <label class="search-label">부서ID</label>
+        <input @keyup.enter="search" v-model="param.deptId" type="text" class="search-input" />
+      </template>
+      <template #col4>
+        <label class="search-label">사용여부</label>
+        <select @change="search" v-model="param.useYn" class="search-select">
+          <option value=""></option>
+          <option value="Y">사용</option>
+          <option value="N">미사용</option>
+        </select>
+      </template>
+      <template #col5>
+        <label class="search-label">기관구분</label>
+        <select @change="search" v-model="param.breuFg" class="search-select">
+          <option value=""></option>
+          <option value="Y">사용</option>
+          <option value="N">미사용</option>
+        </select>
+      </template>
+      <template #col6>
+        <label class="search-label">최종조직여부</label>
+        <select @change="search" v-model="param.flDeptYn" class="search-select">
+          <option value=""></option>
+          <option value="Y">사용</option>
+          <option value="N">미사용</option>
+        </select>
+      </template>
+      <template #col7>
+        <label class="search-label">학사조직여부</label>
+        <select @change="search" v-model="param.shafFormaYn" class="search-select">
+          <option value=""></option>
+          <option value="Y">사용</option>
+          <option value="N">미사용</option>
+        </select>
+      </template>
+    </SearchBox>
     <div
       class="mt-4 bg-white dark:bg-[#252731] p-6 rounded-lg shadow-md md:col-span-1 whitespace-nowrap overflow-x-auto relative"
     >
@@ -470,6 +436,7 @@ import { AllCommunityModule, ModuleRegistry, provideGlobalGridOptions } from 'ag
 import { AgGridVue } from 'ag-grid-vue3' // Vue3 AgGrid Component
 import { ref } from 'vue'
 import ButtonTest from '@/components/ButtonTest.vue'
+import SearchBox from '@/components/SearchBox.vue'
 
 ModuleRegistry.registerModules([AllCommunityModule])
 provideGlobalGridOptions()
