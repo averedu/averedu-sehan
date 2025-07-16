@@ -74,7 +74,7 @@ const loginFun = () => {
     .post("/restApi/login", obj) 
     .then(restApi => {
       console.log('restApi : ', restApi);
-      if (restApi.data.statusCd === 404) {
+      if (restApi.data.statusCd === 50) {
           alert(restApi.data.statusMsg);
           return false;
       }
