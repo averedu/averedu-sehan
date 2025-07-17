@@ -1,15 +1,6 @@
 <template>
   <div class="flex-1 overflow-y-auto p-6">
-    <SearchBox
-      :onSearch="search"
-      :items="[
-        { name: 'loginId', label: '사용자 ID', type: 'text' },
-        { name: 'userName', label: '사용자명', type: 'text' },
-        { name: 'useYn', label: '사용여부', type: 'select', options: useYnOptions },
-        { name: 'notSupported', label: '지원안함', type: 'date' } // 지원하지 않는 타입 샘플
-      ]"
-      v-model="param"
-    />
+    <SearchBox :onSearch="search" :items="items" v-model="param" />
     <div
       class="mt-4 bg-white dark:bg-[#252731] p-6 rounded-lg shadow-md md:col-span-1 whitespace-nowrap overflow-x-auto relative"
     >
@@ -17,11 +8,11 @@
       <div class="flex items-center justify-between mb-4">
         <h2 class="text-xl font-semibold leading-tight text-gray-700">사용자 목록</h2>
         <GridButton
-          @add-row="mainGridAdd()"
+          :featureAuth="'CUDE'"
+          @add-row="mainGridAdd"
           @delete-item="deleteItemMain"
           @save-data="saveDataMain"
           @download-excel="downloadExcelMain"
-          @featureAuth="CUDE"
         />
       </div>
       <!-- 그리드 영역 -->
@@ -40,6 +31,7 @@
 </template>
 
 <script setup>
+// =======================[외부 라이브러리 및 컴포넌트 import]=======================
 import axios from 'axios'
 import { AllCommunityModule, ModuleRegistry, provideGlobalGridOptions } from 'ag-grid-community'
 import { AgGridVue } from 'ag-grid-vue3'
@@ -47,15 +39,29 @@ import { ref } from 'vue'
 import GridButton from '@/components/GridButton.vue'
 import SearchBox from '@/components/SearchBox.vue'
 
-ModuleRegistry.registerModules([AllCommunityModule])
-provideGlobalGridOptions()
-
-// 셀렉트 옵션 변수 선언
+// =======================[공통코드/셀렉트 옵션 정의]=======================
 const useYnOptions = [
   { value: '', label: '전체' },
   { value: 'Y', label: '사용' },
-  { value: 'N', label: '미사용' }
+  { value: 'N', label: '미사용' },
 ]
+
+// =======================[조회조건 필드 정의 및 파라미터 초기화]=======================
+const items = [
+  { name: 'loginId', label: '사용자 ID', type: 'text' },
+  { name: 'userName', label: '사용자명', type: 'text' },
+  { name: 'useYn', label: '사용여부', type: 'select', options: useYnOptions },
+  { name: 'notSupported', label: '지원안함', type: 'date' }, // 지원하지 않는 타입 샘플
+]
+
+// 조회 파라미터(초기값 자동 생성)
+let param = ref({
+  ...Object.fromEntries(items.map(item => [item.name, '']))
+})
+
+// =======================[ag-Grid 글로벌 설정 및 옵션]=======================
+ModuleRegistry.registerModules([AllCommunityModule])
+provideGlobalGridOptions()
 
 const gridOptions = {
   rowSelection: {
@@ -69,9 +75,12 @@ const gridOptions = {
     editType: 'fullRow',
   },
 }
+
+// =======================[ag-Grid API, 컬럼, 데이터 정의]=======================
 const gridApi = ref()
 const columnApi = ref()
 const mainRowData = ref([])
+
 const mainColumnDefs = [
   {
     field: 'status',
@@ -97,6 +106,14 @@ const mainColumnDefs = [
   { field: 'persNo', headerName: '개인번호', width: 200 },
 ]
 
+const mainGridAdd = () => {
+  const mainAddRow = {
+    status: 'N',
+  }
+  mainRowData.value.unshift(mainAddRow)
+}
+
+// =======================[사용자 상세 정보 상태]=======================
 let userDataInfo = ref({
   loginId: '',
   pwd: '',
@@ -107,6 +124,7 @@ let userDataInfo = ref({
   persNo: '',
 })
 
+// =======================[ag-Grid 이벤트 핸들러]=======================
 const onGridReady = (params) => {
   gridApi.value = params.api
   columnApi.value = params.columnApi
@@ -119,12 +137,7 @@ const onCellClicked = (params) => {
   userDataInfo.value = params.data
 }
 
-let param = ref({
-  loginId: '',
-  userName: '',
-  useYn: '',
-})
-
+// =======================[조회 및 데이터 로드 함수]=======================
 const search = () => {
   mainGridCall(param)
 }
@@ -149,7 +162,7 @@ const mainGridCall = (param) => {
     })
 }
 
-// 자동조회
+// =======================[자동조회 예시(주석처리)]=======================
 // mainGridCall(param)
 </script>
 
