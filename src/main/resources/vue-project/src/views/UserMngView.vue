@@ -1,9 +1,7 @@
 <template>
   <div class="flex-1 h-full min-h-0 flex flex-col overflow-y-auto p-6">
     <SearchBox :onSearch="search" :items="items" v-model="param" />
-    <div
-      class="mt-4 bg-white dark:bg-[#252731] p-6 rounded-lg shadow-md md:col-span-1 whitespace-nowrap overflow-x-auto relative flex-1 min-h-0 flex flex-col"
-    >
+    <div class="mt-4 bg-white dark:bg-[#252731] p-6 rounded-lg shadow-md md:col-span-1 whitespace-nowrap overflow-x-auto relative flex-1 min-h-0 flex flex-col">
       <!-- 제목과 버튼을 한 줄에 배치 -->
       <div class="flex items-center justify-between mb-4">
         <h2 class="text-xl font-semibold leading-tight text-gray-700">사용자 목록</h2>

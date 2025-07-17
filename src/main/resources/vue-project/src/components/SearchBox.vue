@@ -3,48 +3,48 @@
     <div v-for="rowIdx in rowCount" :key="rowIdx" class="search-row">
       <template v-for="colIdx in 5" :key="colIdx">
         <!-- 1~4번째 컬럼: 조건 아이템 -->
-        <div v-if="colIdx < 5 && itemIndex(rowIdx, colIdx) < items.length" class="search-item">
-          <label class="search-label" :for="items[itemIndex(rowIdx, colIdx)].name">
-            {{ items[itemIndex(rowIdx, colIdx)].label }}
-          </label>
-          <!-- 텍스트 입력 필드 -->
-          <template v-if="items[itemIndex(rowIdx, colIdx)].type === 'text'">
-            <input
-              :value="modelValue[items[itemIndex(rowIdx, colIdx)].name]"
-              @input="updateValue(items[itemIndex(rowIdx, colIdx)].name, $event.target.value)"
-              @keyup.enter="onSearch"
-              type="text"
-              class="search-input"
-            />
+        <template v-if="colIdx < 5 && itemIndex(rowIdx, colIdx) < items.length">
+          <template v-for="item in [items[itemIndex(rowIdx, colIdx)]]" :key="item.name">
+            <div class="search-item">
+              <label class="search-label" :for="item.name">
+                {{ item.label }}
+              </label>
+              <!-- 텍스트 입력 필드 -->
+              <template v-if="item.type === 'text'">
+                <input
+                  :value="modelValue[item.name]"
+                  @input="updateValue(item.name, $event.target.value)"
+                  @keyup.enter="onSearch"
+                  type="text"
+                  class="search-input"
+                />
+              </template>
+              <!-- 셀렉트 박스 필드 -->
+              <template v-else-if="item.type === 'select'">
+                <select
+                  :value="modelValue[item.name]"
+                  @change="handleSelectChange(item.name, $event.target.value)"
+                  class="search-select"
+                >
+                  <option v-for="opt in item.options" :key="opt.value" :value="opt.value">
+                    {{ opt.label }}
+                  </option>
+                </select>
+              </template>
+              <!-- 지원하지 않는 타입 처리(기본적으로 텍스트 입력) -->
+              <template v-else>
+                <input
+                  type="text"
+                  class="search-input"
+                  :value="'지원하지 않는 타입 테스트'"
+                  readonly
+                  tabindex="-1"
+                  style="background-color: #f3f4f6; color: #aaa; cursor: not-allowed"
+                />
+              </template>
+            </div>
           </template>
-          <!-- 셀렉트 박스 필드 -->
-          <template v-else-if="items[itemIndex(rowIdx, colIdx)].type === 'select'">
-            <select
-              :value="modelValue[items[itemIndex(rowIdx, colIdx)].name]"
-              @change="
-                handleSelectChange(items[itemIndex(rowIdx, colIdx)].name, $event.target.value)
-              "
-              class="search-select"
-            >
-              <option
-                v-for="opt in items[itemIndex(rowIdx, colIdx)].options"
-                :key="opt.value"
-                :value="opt.value"
-              >
-                {{ opt.label }}
-              </option>
-            </select>
-          </template>
-          <!-- 지원하지 않는 타입 처리(기본적으로 텍스트 입력) -->
-          <template v-else>
-            <input
-              :value="modelValue[items[itemIndex(rowIdx, colIdx)].name]"
-              @input="updateValue(items[itemIndex(rowIdx, colIdx)].name, $event.target.value)"
-              type="text"
-              class="search-input"
-            />
-          </template>
-        </div>
+        </template>
         <!-- 5번째 컬럼이면서 마지막 행일 때만 조회 버튼 표시 -->
         <div v-else-if="colIdx === 5 && rowIdx === rowCount" class="search-btn-div">
           <button @click="onSearch" type="button" class="search-btn">조회</button>

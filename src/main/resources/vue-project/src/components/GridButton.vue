@@ -113,10 +113,6 @@ const downloadExcel = () => {
       console.error('Download failed', error)
     })
 }
-
-const getSelectedRows = () => {
-  return []
-}
 </script>
 
 <style scoped>

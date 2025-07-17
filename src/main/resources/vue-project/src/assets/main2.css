@@ -29,7 +29,7 @@
     @apply grid grid-cols-[1fr_1fr_1fr_1fr_12.5rem] items-center gap-4 mb-2;
   }
   .search-item {
-    @apply flex items-center gap-2 bg-yellow-100;
+    @apply flex items-center gap-2;
   }
   .search-label {
     @apply text-sm font-medium text-gray-900 dark:text-white w-32;
