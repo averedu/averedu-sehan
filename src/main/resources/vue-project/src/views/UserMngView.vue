@@ -1,8 +1,8 @@
 <template>
-  <div class="flex-1 overflow-y-auto p-6">
+  <div class="flex-1 h-full min-h-0 flex flex-col overflow-y-auto p-6">
     <SearchBox :onSearch="search" :items="items" v-model="param" />
     <div
-      class="mt-4 bg-white dark:bg-[#252731] p-6 rounded-lg shadow-md md:col-span-1 whitespace-nowrap overflow-x-auto relative"
+      class="mt-4 bg-white dark:bg-[#252731] p-6 rounded-lg shadow-md md:col-span-1 whitespace-nowrap overflow-x-auto relative flex-1 min-h-0 flex flex-col"
     >
       <!-- 제목과 버튼을 한 줄에 배치 -->
       <div class="flex items-center justify-between mb-4">
@@ -16,14 +16,14 @@
         />
       </div>
       <!-- 그리드 영역 -->
-      <div class="flex-auto h-full">
+      <div class="flex-1 min-h-0 overflow-hidden">
         <ag-grid-vue
           :columnDefs="mainColumnDefs"
           :rowData="mainRowData"
           @cell-clicked="onCellClicked"
           @grid-ready="onGridReady"
           :gridOptions="gridOptions"
-          style="width: 100%; height: 600px"
+          style="width: 100%; height: 100%"
         ></ag-grid-vue>
       </div>
     </div>
@@ -56,7 +56,7 @@ const items = [
 
 // 조회 파라미터(초기값 자동 생성)
 let param = ref({
-  ...Object.fromEntries(items.map(item => [item.name, '']))
+  ...Object.fromEntries(items.map((item) => [item.name, ''])),
 })
 
 // =======================[ag-Grid 글로벌 설정 및 옵션]=======================

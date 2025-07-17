@@ -27,7 +27,7 @@ const props = defineProps({
   featureAuth: { type: String }, // 사용기능 → featureAuth (CUDE 문자열)
 })
 
-const emit = defineEmits()
+const emit = defineEmits(['add-row', 'delete-item', 'save-data', 'download-excel'])
 const isAddRowInProgress = ref(false)
 
 // 각 권한별 visible 여부
