@@ -1,38 +1,31 @@
 <template>
   <div class="flex-1 overflow-y-auto p-6">
-    <SearchBox :onSearch="search" :colCount="3">
-      <template #col1>
-        <label class="search-label">사용자 ID</label>
-        <input @keyup.enter="search" v-model="param.loginId" type="text" class="search-input" />
-      </template>
-      <template #col2>
-        <label class="search-label">사용자명</label>
-        <input @keyup.enter="search" v-model="param.userName" type="text" class="search-input" />
-      </template>
-      <template #col3>
-        <label class="search-label">사용여부</label>
-        <select @change="search" v-model="param.useYn" class="search-select">
-          <option value="">전체</option>
-          <option value="Y">사용</option>
-          <option value="N">미사용</option>
-        </select>
-      </template>
-    </SearchBox>
+    <SearchBox
+      :onSearch="search"
+      :items="[
+        { name: 'loginId', label: '사용자 ID', type: 'text' },
+        { name: 'userName', label: '사용자명', type: 'text' },
+        { name: 'useYn', label: '사용여부', type: 'select', options: useYnOptions },
+        { name: 'notSupported', label: '지원안함', type: 'date' } // 지원하지 않는 타입 샘플
+      ]"
+      v-model="param"
+    />
     <div
       class="mt-4 bg-white dark:bg-[#252731] p-6 rounded-lg shadow-md md:col-span-1 whitespace-nowrap overflow-x-auto relative"
     >
       <!-- 제목과 버튼을 한 줄에 배치 -->
       <div class="flex items-center justify-between mb-4">
         <h2 class="text-xl font-semibold leading-tight text-gray-700">사용자 목록</h2>
-        <!-- <ButtonTest
+        <GridButton
           @add-row="mainGridAdd()"
           @delete-item="deleteItemMain"
           @save-data="saveDataMain"
           @download-excel="downloadExcelMain"
-        /> -->
+          @featureAuth="CUDE"
+        />
       </div>
       <!-- 그리드 영역 -->
-      <div class="flex-auto">
+      <div class="flex-auto h-full">
         <ag-grid-vue
           :columnDefs="mainColumnDefs"
           :rowData="mainRowData"
@@ -51,11 +44,18 @@ import axios from 'axios'
 import { AllCommunityModule, ModuleRegistry, provideGlobalGridOptions } from 'ag-grid-community'
 import { AgGridVue } from 'ag-grid-vue3'
 import { ref } from 'vue'
-import ButtonTest from '@/components/ButtonTest.vue'
+import GridButton from '@/components/GridButton.vue'
 import SearchBox from '@/components/SearchBox.vue'
 
 ModuleRegistry.registerModules([AllCommunityModule])
 provideGlobalGridOptions()
+
+// 셀렉트 옵션 변수 선언
+const useYnOptions = [
+  { value: '', label: '전체' },
+  { value: 'Y', label: '사용' },
+  { value: 'N', label: '미사용' }
+]
 
 const gridOptions = {
   rowSelection: {
@@ -148,7 +148,9 @@ const mainGridCall = (param) => {
       console.log('mainGrid load error', error)
     })
 }
-mainGridCall(param)
+
+// 자동조회
+// mainGridCall(param)
 </script>
 
 <style lang="scss" scoped></style>

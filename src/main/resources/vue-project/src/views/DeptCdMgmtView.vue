@@ -1,85 +1,18 @@
 <template>
   <div class="flex-1 overflow-y-auto p-6">
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-6">
-      <div class="bg-white dark:bg-[#252731] h-32 p-6 rounded-lg shadow-md md:col-span-1">
-        <label class="p-1"
-          >부서명<input
-            @keyup.enter="search()"
-            v-model="param.deptNm"
-            type="text"
-            class="mx-3 bg-gray-50 border border-gray-300 text-gray-900"
-        /></label>
-        <label class="p-1"
-          >부서코드<input
-            @keyup.enter="search()"
-            v-model="param.deptCd"
-            type="text"
-            class="mx-3 bg-gray-50 border border-gray-300 text-gray-900"
-        /></label>
-        <label class="p-1"
-          >부서ID<input
-            @keyup.enter="search()"
-            v-model="param.deptId"
-            class="mx-3 bg-gray-50 border border-gray-300 text-gray-900"
-        /></label>
-        <label class="p-1">
-          사용여부
-          <select
-            @change="search()"
-            v-model="param.useYn"
-            class="mx-3 p-1 mb-6 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500"
-          >
-            <option selected></option>
-            <option value="Y">사용</option>
-            <option value="N">미사용</option>
-          </select></label
-        ><br />
-        <label class="p-1"
-          >기관구분
-          <select
-            @change="search()"
-            v-model="param.breuFg"
-            class="mx-3 p-1 mb-6 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500"
-          >
-            <option selected></option>
-            <option value="Y">사용</option>
-            <option value="N">미사용</option>
-          </select></label
-        >
-        <label class="p-1"
-          >최종조직여부
-          <select
-            @change="search()"
-            v-model="param.flDeptYn"
-            class="mx-3 p-1 mb-6 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500"
-          >
-            <option selected></option>
-            <option value="Y">사용</option>
-            <option value="N">미사용</option>
-          </select></label
-        >
-        <label class="p-1"
-          >학사조직여부
-          <select
-            @change="search()"
-            v-model="param.shafFormaYn"
-            class="mx-3 p-1 mb-6 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500"
-          >
-            <option selected></option>
-            <option value="Y">사용</option>
-            <option value="N">미사용</option>
-          </select></label
-        >
-        <button
-          @click="search()"
-          id="searchBtn"
-          type="button"
-          class="float-right text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
-        >
-          조회
-        </button>
-      </div>
-    </div>
+    <SearchBox
+      :onSearch="search"
+      v-model="param"
+      :items="[
+        { name: 'deptNm', label: '부서명', type: 'text' },
+        { name: 'deptCd', label: '부서코드', type: 'text' },
+        { name: 'deptId', label: '부서ID', type: 'text' },
+        { name: 'useYn', label: '사용여부', type: 'select', options: useYnOptions },
+        { name: 'breuFg', label: '기관구분', type: 'select', options: ynOptions },
+        { name: 'flDeptYn', label: '최종조직여부', type: 'select', options: ynOptions },
+        { name: 'shafFormaYn', label: '학사조직여부', type: 'select', options: ynOptions }
+      ]"
+    />
     <div
       class="mt-4 bg-white dark:bg-[#252731] p-6 rounded-lg shadow-md md:col-span-1 whitespace-nowrap overflow-x-auto relative"
     >
@@ -470,9 +403,22 @@ import { AllCommunityModule, ModuleRegistry, provideGlobalGridOptions } from 'ag
 import { AgGridVue } from 'ag-grid-vue3' // Vue3 AgGrid Component
 import { ref } from 'vue'
 import ButtonTest from '@/components/ButtonTest.vue'
+import SearchBox from '@/components/SearchBox.vue'
 
 ModuleRegistry.registerModules([AllCommunityModule])
 provideGlobalGridOptions()
+
+// 셀렉트 옵션 변수 선언
+const useYnOptions = [
+  { value: '', label: '전체' },
+  { value: 'Y', label: '사용' },
+  { value: 'N', label: '미사용' }
+]
+const ynOptions = [
+  { value: '', label: '전체' },
+  { value: 'Y', label: '예' },
+  { value: 'N', label: '아니오' }
+]
 
 const mainGridAdd = () => {
   const mainAddRow = {
@@ -703,7 +649,7 @@ const mainGridCall = (param) => {
       console.log('mainGrid load error', error)
     })
 }
-mainGridCall(param)
+//mainGridCall(param)
 </script>
 
 <style lang="scss" scoped></style>
