@@ -257,33 +257,36 @@ const saveData = () => {
 
 // =======================[엑셀 다운로드 기능]=======================
 const downloadExcel = () => {
-  if (!gridApi.value) {
-    console.error('gridApi가 없습니다.')
-    return
-  }
+  alert("엑셀 다운로드 기능은 아직 구현되지 않았습니다.")
+  return
 
-  const rowData = []
-  gridApi.value.forEachNode((node) => rowData.push(node.data))
+  // if (!gridApi.value) {
+  //   console.error('gridApi가 없습니다.')
+  //   return
+  // }
 
-  if (rowData.length === 0) {
-    console.error('다운로드할 데이터가 없습니다.')
-    return
-  }
+  // const rowData = []
+  // gridApi.value.forEachNode((node) => rowData.push(node.data))
 
-  axios
-    .post('/restApi/prj/sys/downloadExcel.do', rowData, { responseType: 'blob' })
-    .then((response) => {
-      const url = window.URL.createObjectURL(new Blob([response.data]))
-      const link = document.createElement('a')
-      link.href = url
-      link.setAttribute('download', 'user_data.xlsx')
-      document.body.appendChild(link)
-      link.click()
-      document.body.removeChild(link)
-    })
-    .catch((error) => {
-      console.error('엑셀 다운로드 실패:', error)
-    })
+  // if (rowData.length === 0) {
+  //   console.error('다운로드할 데이터가 없습니다.')
+  //   return
+  // }
+
+  // axios
+  //   .post('/restApi/prj/sys/downloadExcel.do', rowData, { responseType: 'blob' })
+  //   .then((response) => {
+  //     const url = window.URL.createObjectURL(new Blob([response.data]))
+  //     const link = document.createElement('a')
+  //     link.href = url
+  //     link.setAttribute('download', 'user_data.xlsx')
+  //     document.body.appendChild(link)
+  //     link.click()
+  //     document.body.removeChild(link)
+  //   })
+  //   .catch((error) => {
+  //     console.error('엑셀 다운로드 실패:', error)
+  //   })
 }
 </script>
 

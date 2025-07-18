@@ -32,14 +32,14 @@
           <div class="section-header">
             <h2 class="section-title">부서정보</h2>
           </div>
-          <EntityForm :model="param" :items="deptInfoItems" @update:model="deptDetaInfo = $event" />
+          <EntityForm :model="deptDetaInfo" :items="deptInfoItems" @update:model="deptDetaInfo = $event" />
         </div>
 
         <div class="pt-6">
           <div class="section-header">
             <h2 class="section-title">부서코드 연계정보</h2>
           </div>
-          <EntityForm :model="param" :items="deptLinkItems" @update:model="deptDetaInfo = $event" />
+          <EntityForm :model="deptDetaInfo" :items="deptLinkItems" @update:model="deptDetaInfo = $event" />
         </div>
 
         <div class="pt-6 pb-6">
