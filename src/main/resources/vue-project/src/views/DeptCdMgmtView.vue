@@ -2,6 +2,7 @@
   <div class="flex flex-col p-6 h-full">
     <SearchBox :autoSearch="false" :onSearch="search" :items="condItems" v-model="param" />
     <div class="section flex flex-row items-stretch min-h-0">
+      <!-- 왼쪽 부서목록 영역 -->
       <div id="section-left" class="w-1/3 min-w-[350px] flex flex-col pr-6 h-full">
         <div class="section-header">
           <h2 class="section-title">부서목록</h2>
@@ -24,6 +25,8 @@
           ></ag-grid-vue>
         </div>
       </div>
+
+      <!-- 오른쪽 상세/연계/이력 영역 -->
       <div id="section-right" class="w-2/3 flex flex-col min-h-0 h-full overflow-y-auto">
         <div>
           <div class="section-header">
@@ -31,18 +34,20 @@
           </div>
           <EntityForm :model="param" :items="deptInfoItems" @update:model="deptDetaInfo = $event" />
         </div>
+
         <div class="pt-6">
           <div class="section-header">
             <h2 class="section-title">부서코드 연계정보</h2>
           </div>
           <EntityForm :model="param" :items="deptLinkItems" @update:model="deptDetaInfo = $event" />
         </div>
+
         <div class="pt-6 pb-6">
           <div class="section-header">
             <h2 class="section-title">부서이력목록</h2>
             <b class="text-sm font-light">
-              * 부서가 통·폐합되거나 명칭 변경 등으로 신규 부서를 등록한 경우<br />이력 관리를 위해
-              부서 이력 목록을 등록해주십시오.
+              * 부서가 통·폐합되거나 명칭 변경 등으로 신규 부서를 등록한 경우<br />
+              이력 관리를 위해 부서 이력 목록을 등록해주십시오.
             </b>
             <GridButton
               :featureAuth="deptHistoryFeatureAuth"
@@ -67,18 +72,20 @@
 </template>
 
 <script setup>
+// =======================[외부 라이브러리 및 컴포넌트 import]=======================
 import axios from 'axios'
 import { AllCommunityModule, ModuleRegistry, provideGlobalGridOptions } from 'ag-grid-community'
-import { AgGridVue } from 'ag-grid-vue3' // Vue3 AgGrid Component
+import { AgGridVue } from 'ag-grid-vue3'
 import { ref } from 'vue'
 import SearchBox from '@/components/SearchBox.vue'
 import GridButton from '@/components/GridButton.vue'
 import EntityForm from '@/components/EntityForm.vue'
 
+// AG Grid 모듈 등록 및 글로벌 옵션 제공
 ModuleRegistry.registerModules([AllCommunityModule])
 provideGlobalGridOptions()
 
-// 셀렉트 옵션 변수 선언
+// =======================[공통 코드/셀렉트 옵션 정의]=======================
 const useYnOptions = [
   { value: '', label: '전체' },
   { value: 'Y', label: '사용' },
@@ -90,6 +97,7 @@ const ynOptions = [
   { value: 'N', label: '아니오' },
 ]
 
+// =======================[조회조건 필드 및 파라미터 초기화]=======================
 const condItems = [
   { name: 'deptNm', label: '부서명', type: 'text' },
   { name: 'deptCd', label: '부서코드', type: 'text' },
@@ -99,18 +107,11 @@ const condItems = [
   { name: 'flDeptYn', label: '최종조직여부', type: 'select', options: ynOptions },
   { name: 'shafFormaYn', label: '학사조직여부', type: 'select', options: ynOptions },
 ]
-
-let param = ref({
-  deptNm: '',
-  deptCd: '',
-  deptId: '',
-  useYn: '',
-  breuFg: '',
-  flDeptYn: '',
-  shafFormaYn: '',
+const param = ref({
+  ...Object.fromEntries(condItems.map((item) => [item.name, ''])),
 })
 
-// 필드 정의 배열
+// =======================[폼/그리드용 옵션 및 항목 정의]=======================
 const breuFgOptions = [
   { value: '', label: '선택' },
   { value: 'Y', label: '기관' },
@@ -137,10 +138,10 @@ const deptInfoItems = [
   { key: 'deptAbbnm', label: '부서약어명', type: 'text' },
   { key: 'cyberFormaYn', label: '가상조직여부', type: 'checkbox' },
   { key: 'deptEngNm', label: '부서영문명', type: 'text' },
-  { key: 'deptEngAbbNm', label: '부서영문약어명', type: 'text' },
+  { key: 'deptEngAbbNm', label: '부서영문 약어명', type: 'text' },
   { key: 'flDeptYn', label: '최종조직여부', type: 'checkbox' },
   { key: 'deptChnNm', label: '부서중문명', type: 'text' },
-  { key: 'deptChnAbbNm', label: '부서중문약어명', type: 'text' },
+  { key: 'deptChnAbbNm', label: '부서중문 약어명', type: 'text' },
   { key: 'deptId', label: '부서ID', type: 'text' },
   { key: 'frDt', label: '생성일자', type: 'date' },
   { key: 'colgNm', label: '대학(처)', type: 'text' },
@@ -149,7 +150,7 @@ const deptInfoItems = [
   { key: 'sustTeamNm', label: '학부(팀)', type: 'text' },
   { key: 'deptSortSeq', label: '부서정렬순번', type: 'text' },
   { key: 'ablnExpcDt', label: '폐지예정일자', type: 'date' },
-  { key: 'subChancMissCd', label: '부총장조직코드', type: 'select', options: breuFgOptions },
+  { key: 'subChancMissCd', label: '부총장 조직코드', type: 'select', options: breuFgOptions },
   { key: 'remk', label: '비고', type: 'text' },
 ]
 
@@ -209,34 +210,21 @@ const deptLinkItems = [
   { key: 'empGwDeptCd', label: '직원그룹웨어 부서코드', type: 'text' },
 ]
 
+// =======================[권한/버튼 활성화 설정]=======================
 const deptListFeatureAuth = ref({
   add: true,
   delete: true,
   save: true,
   download: true,
 })
+const deptHistoryFeatureAuth = ref({
+  add: true,
+  delete: true,
+  save: true,
+  download: true,
+})
 
-const mainGridAdd = () => {
-  const mainAddRow = {
-    status: 'I',
-  }
-  mainRowData.value.unshift(mainAddRow)
-}
-
-const gridOptions = {
-  rowSelection: {
-    mode: 'multiRow',
-    headerCheckbox: true,
-  },
-  defaultColDef: {
-    headerClass: 'centered',
-    cellClass: 'centered',
-    editable: true,
-  },
-  editType: 'fullRow',
-}
-const gridApi = ref()
-const columnApi = ref()
+// =======================[그리드 데이터 및 컬럼 정의]=======================
 const mainRowData = ref([])
 const mainColumnDefs = [
   {
@@ -307,20 +295,6 @@ const mainColumnDefs = [
   { field: 'mjClsf', headerName: '전공분류', width: 100, hide: true },
 ]
 
-const deptHistoryFeatureAuth = ref({
-  add: true,
-  delete: true,
-  save: true,
-  download: true,
-})
-
-const subGridAdd = () => {
-  const subAddRow = {
-    status: 'I',
-  }
-  subRowData.value.unshift(subAddRow)
-}
-
 const subRowData = ref([])
 const subColumnDefs = [
   {
@@ -336,7 +310,7 @@ const subColumnDefs = [
       } else if (params.value === 'I') {
         return '<img src="path_to_n_image.png" alt="추가" />'
       }
-      return '' // 기본 값
+      return ''
     },
   },
   {
@@ -352,6 +326,7 @@ const subColumnDefs = [
   { field: 'remk', headerName: '비고', width: 200 },
 ]
 
+// =======================[상세 정보 상태]=======================
 let deptDetaInfo = ref({
   gridNm: '',
   deptCd: '',
@@ -406,6 +381,11 @@ let deptDetaInfo = ref({
   mjClsf: '',
 })
 
+// =======================[이벤트 핸들러/CRUD 함수]=======================
+
+// AG Grid 준비 완료 시 API 저장
+const gridApi = ref()
+const columnApi = ref()
 const onGridReady = (params) => {
   gridApi.value = params.api
   columnApi.value = params.columnApi
@@ -413,21 +393,34 @@ const onGridReady = (params) => {
   console.log('columnApi : ' + columnApi.value)
 }
 
+// 그리드 셀 클릭 시 상세 정보 갱신
 const onCellClicked = (params) => {
   console.log('cell click : ', params.data)
   deptDetaInfo.value = params.data
 }
 
+// 부서목록 추가
+const mainGridAdd = () => {
+  const mainAddRow = { status: 'I' }
+  mainRowData.value.unshift(mainAddRow)
+}
+
+// 부서이력목록 추가
+const subGridAdd = () => {
+  const subAddRow = { status: 'I' }
+  subRowData.value.unshift(subAddRow)
+}
+
+// 조회(검색) 실행
 const search = () => {
   mainGridCall(param)
 }
 
+// 메인 그리드 데이터 조회
 const mainGridCall = (param) => {
   console.log('param : ', param)
-
   const obj = Object.assign({}, param.value)
   console.log('obj : ', obj)
-
   axios
     .post('/restApi/prj/com/deptCdMngList.do', obj)
     .then((restApi) => {
