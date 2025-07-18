@@ -413,20 +413,15 @@ const subGridAdd = () => {
 
 // 조회(검색) 실행
 const search = () => {
-  mainGridCall(param)
-}
-
-// 메인 그리드 데이터 조회
-const mainGridCall = (param) => {
   console.log('param : ', param)
   const obj = Object.assign({}, param.value)
   console.log('obj : ', obj)
   axios
-    .post('/restApi/prj/com/deptCdMngList.do', obj)
+    .post('/restApi/prj/com/selectDeptCdMngList.do', obj)
     .then((restApi) => {
       console.log('restApi : ', restApi)
       if (restApi.status === 200) {
-        mainRowData.value = restApi.data.deptList
+        mainRowData.value = restApi.data
         subRowData.value = restApi.data.deptHistList
         console.log(mainRowData.value)
       }

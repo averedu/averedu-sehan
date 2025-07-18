@@ -14,7 +14,7 @@ import com.averedu.averedu_sehan.prj.sys.service.CommonUserService;
 import com.averedu.averedu_sehan.prj.sys.vo.Csys130VO;
 
 @RestController
-@RequestMapping("/restApi/prj/sys/commonUser")
+@RequestMapping("/restApi/prj/sys")
 public class CommonUserController {
 
     @Autowired

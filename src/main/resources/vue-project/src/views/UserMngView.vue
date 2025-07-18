@@ -166,7 +166,7 @@ const search = () => {
   console.log('obj : ', obj)
 
   axios
-    .post('/restApi/prj/sys/commonUser/selectCommonUserList.do', obj)
+    .post('/restApi/prj/sys/selectCommonUserList.do', obj)
     .then((restApi) => {
       console.log('restApi : ', restApi)
       if (restApi.status === 200) {
@@ -242,7 +242,7 @@ const saveData = () => {
   console.log('저장할 데이터:', saveRows)
 
   axios
-    .post('/restApi/prj/sys/commonUser/saveCommonUserList.do', saveRows)
+    .post('/restApi/prj/sys/saveCommonUserList.do', saveRows)
     .then((response) => {
       if (response.status === 200) {
         console.log(response.data || '저장 성공')
@@ -271,7 +271,7 @@ const downloadExcel = () => {
   }
 
   axios
-    .post('/restApi/prj/sys/commonUser/downloadExcel.do', rowData, { responseType: 'blob' })
+    .post('/restApi/prj/sys/downloadExcel.do', rowData, { responseType: 'blob' })
     .then((response) => {
       const url = window.URL.createObjectURL(new Blob([response.data]))
       const link = document.createElement('a')

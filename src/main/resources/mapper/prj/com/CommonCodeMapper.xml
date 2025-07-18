@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.averedu.averedu_sehan.prj.com.mapper.CommonCodeMapper">
+
+  <select id="selectDeptCdMngList" parameterType="map" resultType="com.averedu.averedu_sehan.prj.com.vo.Csys300VO">
+		<!-- SQL ID: CommonCodeMapper.selectDeptCdMngList 부서코드관리 조회 시작 -->
+		SELECT CONCAT(CONCAT(A.DEPT_NM, '('), CONCAT(A.DEPT_CD ,')')) AS GRID_NM
+			 , LEVEL AS TREE_LEVEL
+    		 , '0' as CHK
+			 , A.DEPT_CD
+			 , A.UP_DEPT_CD 
+			 , A.DEPT_GRP_FG_CD
+			 , A.DEPT_TYP_CD
+			 , A.UNIV_CD
+			 , A.SUST_CD
+			 , A.DEPT_NM
+			 , A.DEPT_ABBNM
+			 , A.SHAF_FORMA_YN
+			 , A.DAN_FG
+			 , A.FR_DT
+			 , A.ABLN_DT
+			 , A.ABLN_EXPC_DT
+			 , A.PRN_ORD
+			 , A.CYBER_FORMA_YN
+			 , A.USE_YN
+			 , A.FL_DEPT_YN
+			 , A.REMK
+			 , A.CAMP_FG_CD
+			 , A.FRST_INPUT_ID
+			 , A.FRST_INPUT_DT
+			 , A.FRST_INPUT_MENU_ID
+			 , A.FRST_INPUT_IP
+			 , A.LAST_MODF_ID
+			 , A.LAST_MODF_DT
+			 , A.LAST_MODF_MENU_ID
+			 , A.LAST_MODF_IP AS BREU_FG
+			 , A.FORMA_TYP
+			 , A.DEPT_ENG_NM
+			 , A.DEPT_ENG_ABB_NM
+			 , A.DEPT_CHN_NM
+			 , A.DEPT_CHN_ABB_NM
+			 , A.DEPT_ID 
+			 , A.COLG_NM 
+			 , A.SUST_TEAM_NM
+			 , A.CERT_DEPT_NM
+			 , A.DAYTM_SUST_CD 
+			 , A.INFO_ANNC_PART 
+			 , A.SHAF_DEGR
+			 , A.MASTER_DEGR
+			 , A.PHD_DEGR 
+			 , A.MJ_CLSF
+			 , A.CONN_MJ 
+			 , A.ACHV_PART
+			 , A.REG_PART
+			 , A.GRDT_DEGR_IDCD_PRN_NM
+			 , A.LSN_YR
+			 , A.ACHV_SCRN_UNIV
+			 , A.GRSC_CLSF
+			 , A.SUST_NM
+			 , A.GW_DEPT_CONN_YN
+			 , A.SPRF_GW_DEPT_CD
+			 , A.EMP_GW_DEPT_CD
+			 , A.DEPT_SORT_SEQ
+			 , A.SUB_CHANC_MISS_CD
+		  FROM COM.CSYS300 A
+		 WHERE 1=1
+		<if test="deptNm != null and deptNm != ''"> 			                                         							                        
+	       AND A.DEPT_NM LIKE '%' || #{deptNm} || '%'                                            													 
+        </if>   
+        <if test="deptCd != null and deptCd != ''">                                                     							                        
+	       AND A.DEPT_CD LIKE '%' || #{deptCd} || '%'                                           													 
+        </if>
+        <if test="deptId != null and deptId != ''">       		                                                   							                        
+	       AND A.DEPT_ID LIKE '%' || #{deptId} || '%'                                           													 
+        </if>
+        <if test="useYn != null and useYn != ''">                                                 							                        
+	       AND A.USE_YN = #{useYn}                                            													 
+        </if>
+        <if test="breuFg != null and breuFg != ''">                                                 							                        
+	       AND A.BREU_FG =  #{breuFg}                                            													 
+        </if>
+        <if test="flDeptYn != null and flDeptYn != ''">                                                 							                        
+	       AND A.FL_DEPT_YN = #{flDeptYn}                                            													 
+        </if>
+        <if test="shafFormaYn != null and shafFormaYn != ''">                                                 							                        
+	       AND A.SHAF_FORMA_YN = #{shafFormaYn}                                           													 
+        </if>
+		 START WITH A.UP_DEPT_CD IS NULL
+	   CONNECT BY PRIOR A.DEPT_CD = UP_DEPT_CD
+		 ORDER BY A.DEPT_CD
+		<!-- SQL ID: CommonCodeMapper.selectDeptCdMngList 부서코드관리 조회 끝 -->
+  </select>
+  
+</mapper>
