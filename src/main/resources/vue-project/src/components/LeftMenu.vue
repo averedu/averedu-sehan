@@ -16,8 +16,8 @@
           <span class="mx-2 text-2xl font-semibold text-white">averedu</span>
         </div>
       </div>
-    <!-- 기존 동적 메뉴 주석처리 -->
-    <!--
+      <!-- 기존 동적 메뉴 주석처리 -->
+      <!--
     <nav v-for="(menuList, idx) in sysMenuList" :key="idx" class="mt-10">
       <RouterLink
         :to="menuList.pgmPathNm"
@@ -29,23 +29,30 @@
     </nav>
     -->
 
-    <!-- 하드코딩 메뉴 -->
-    <nav class="mt-10">
-      <RouterLink
-        to="/main/userMng"
-        class="flex items-center px-6 py-2 mt-4 duration-200 border-l-4"
-        :class="[$route.path === '/main/userMng' ? activeClass : inactiveClass]"
-      >
-        <span class="mx-4">사용자관리</span>
-      </RouterLink>
-      <RouterLink
-        to="/main/deptCdMgmt"
-        class="flex items-center px-6 py-2 mt-4 duration-200 border-l-4"
-        :class="[$route.path === '/main/deptCdMgmt' ? activeClass : inactiveClass]"
-      >
-        <span class="mx-4">부서코드관리</span>
-      </RouterLink>
-    </nav>
+      <!-- 하드코딩 메뉴 -->
+      <nav class="mt-10">
+        <RouterLink
+          to="/main/userMng"
+          class="flex items-center px-6 py-2 mt-4 duration-200 border-l-4"
+          :class="[$route.path === '/main/userMng' ? activeClass : inactiveClass]"
+        >
+          <span class="mx-4">사용자관리</span>
+        </RouterLink>
+        <RouterLink
+          to="/main/deptCdMgmt"
+          class="flex items-center px-6 py-2 mt-4 duration-200 border-l-4"
+          :class="[$route.path === '/main/deptCdMgmt' ? activeClass : inactiveClass]"
+        >
+          <span class="mx-4">부서코드관리</span>
+        </RouterLink>
+        <RouterLink
+          to="/main/programMgmt"
+          class="flex items-center px-6 py-2 mt-4 duration-200 border-l-4"
+          :class="[$route.path === '/main/programMgmt' ? activeClass : inactiveClass]"
+        >
+          <span class="mx-4">프로그램관리</span>
+        </RouterLink>
+      </nav>
     </div>
   </div>
 </template>

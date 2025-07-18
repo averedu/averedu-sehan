@@ -32,6 +32,7 @@
               >
               <input
                 v-model="login.pwd"
+                @keydown.enter="enterFun"
                 type="password"
                 name="password"
                 id="password"
@@ -78,6 +79,10 @@ import { ref } from 'vue'
 import axios from 'axios'
 
 const router = useRouter()
+
+const enterFun = () => {
+  loginFun()
+}
 
 let login = ref({
   loginId: '',

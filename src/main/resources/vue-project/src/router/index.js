@@ -3,6 +3,7 @@ import LoginView from '../views/LoginView.vue'
 import MainView from '../views/MainView.vue'
 import DeptCdMgmtView from '../views/DeptCdMgmtView.vue'
 import UserMngView from '@/views/UserMngView.vue'
+import ProgramMgmtView from '../views/ProgramMgmtView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -26,6 +27,11 @@ const router = createRouter({
           path: 'deptCdMgmt',
           name: '부서코드관리',
           component: DeptCdMgmtView,
+        },
+        {
+          path: 'programMgmt',
+          name: '프로그램관리',
+          component: ProgramMgmtView,
         },
       ],
     },
