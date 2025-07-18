@@ -1,5 +1,5 @@
 <template>
-  <div class="flex-1 h-full min-h-0 flex flex-col overflow-y-auto p-6">
+  <div class="flex-1 h-full min-h-0 flex flex-col p-6">
     <SearchBox :autoSearch="false" :onSearch="search" :items="items" v-model="param" />
     <div class="section flex-1 min-h-0 flex flex-col">
       <!-- 제목과 버튼을 한 줄에 배치 -->

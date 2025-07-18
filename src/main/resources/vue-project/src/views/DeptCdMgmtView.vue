@@ -1,7 +1,7 @@
 <template>
-  <div class="h-full flex flex-col overflow-y-auto p-6">
+  <div class="flex flex-col p-6 h-full">
     <SearchBox :autoSearch="false" :onSearch="search" :items="condItems" v-model="param" />
-    <div class="section flex flex-row min-h-0 whitespace-nowrap overflow-x-auto">
+    <div class="section flex flex-row items-stretch min-h-0">
       <div id="section-left" class="w-1/3 min-w-[350px] flex flex-col pr-6 h-full">
         <div class="section-header">
           <h2 class="section-title">부서목록</h2>
@@ -24,7 +24,7 @@
           ></ag-grid-vue>
         </div>
       </div>
-      <div id="section-right" class="w-2/3 flex flex-col min-h-0 h-full">
+      <div id="section-right" class="w-2/3 flex flex-col min-h-0 h-full overflow-y-auto">
         <div>
           <div class="section-header">
             <h2 class="section-title">부서정보</h2>
