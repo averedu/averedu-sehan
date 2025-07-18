@@ -35,11 +35,10 @@
               <template v-else>
                 <input
                   type="text"
-                  class="search-input"
+                  class="search-input bg-gray-100 text-gray-400 cursor-not-allowed"
                   :value="'지원하지 않는 타입 테스트'"
                   readonly
                   tabindex="-1"
-                  style="background-color: #f3f4f6; color: #aaa; cursor: not-allowed"
                 />
               </template>
             </div>
@@ -50,7 +49,7 @@
           <button @click="onSearch" type="button" class="search-btn">조회</button>
         </div>
         <!-- 나머지 빈 컬럼 처리 -->
-        <div v-else class="search-item" />
+        <div v-else class="search-item"></div>
       </template>
     </div>
   </div>
@@ -60,12 +59,16 @@
 // =======================[Vue 및 props 정의]=======================
 import { computed } from 'vue'
 
-// 부모에서 전달받는 props 정의
+// =======================[Props 정의]=======================
 const props = defineProps({
-  onSearch: Function, // 조회 함수
+  autoSearch: {
+    type: Boolean,
+    default: false, // 자동 조회 여부
+  },
+  onSearch: Function, // 부모에서 전달받는 조회 함수
   items: {
     type: Array,
-    required: true,
+    required: true, // 검색 조건 항목 배열
     // 예시: [{ name: 'loginId', label: '사용자 ID' }, ...]
   },
   modelValue: {
@@ -74,7 +77,7 @@ const props = defineProps({
   },
 })
 
-// v-model 양방향 바인딩을 위한 emit 정의
+// =======================[emit 정의]=======================
 const emit = defineEmits(['update:modelValue'])
 
 // =======================[행/열 계산 및 인덱스 함수]=======================
@@ -88,10 +91,19 @@ function updateValue(name, value) {
   emit('update:modelValue', { ...props.modelValue, [name]: value })
 }
 
-// 셀렉트 박스 변경 시 값 업데이트 및 바로 조회 실행
+// =======================[셀렉트 박스 변경 핸들러]=======================
+// 셀렉트 박스 값 변경 시 값 업데이트 및 바로 조회 실행
 function handleSelectChange(name, value) {
-  updateValue(name, value) // 값 업데이트
-  props.onSearch() // 조회 함수 실행
+  updateValue(name, value)
+  if (typeof props.onSearch === 'function') {
+    props.onSearch() // 조회 함수 실행
+  }
+}
+
+// =======================[자동 조회 처리]=======================
+// autoSearch가 true면 컴포넌트 마운트 시 조회 함수 실행
+if (props.autoSearch && typeof props.onSearch === 'function') {
+  props.onSearch()
 }
 </script>
 

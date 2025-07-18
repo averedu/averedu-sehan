@@ -6,26 +6,76 @@
 <mapper namespace="com.averedu.averedu_sehan.prj.sys.mapper.CommonUserMapper">
 
   <select id="selectCommonUserList" parameterType="map" resultType="com.averedu.averedu_sehan.prj.sys.vo.Csys130VO">
-    SELECT
-      LOGIN_ID,
-      PWD,
-      PWD_ERR_FREQ,
-      PWD_CHG_DTTM,
-      USER_ST_CD,
-      FL_LOGIN_DTTM,
-      PERS_NO
-    FROM CSYS130
-    <where>
-      <if test="loginId != null and loginId != ''">
-        AND LOGIN_ID = #{loginId}
-      </if>
-      <if test="userName != null and userName != ''">
-        AND USER_NAME = #{userName}
-      </if>
-      <if test="useYn != null and useYn != ''">
-        AND USE_YN = #{useYn}
-      </if>
-    </where>
+		<!-- SQL ID: CommonUserMapper.selectCommonUserList 사용자관리 조회 시작 -->
+		SELECT LOGIN_ID      /* 로그인ID */
+			   , PWD           /* 비밀번호 */
+			   , PWD_ERR_FREQ  /* 비밀번호오류횟수 */
+			   , PWD_CHG_DTTM  /* 비밀번호변경일시 */
+			   , USER_ST_CD    /* 사용자상태코드 */
+			   , FL_LOGIN_DTTM /* 최종로그인일시 */
+			   , PERS_NO       /* 신상번호 */
+		  FROM COM.CSYS130 /* 사용자정보 */
+		 WHERE 1=1
+		  <if test="loginId != null and loginId != ''">
+		   AND LOGIN_ID LIKE '%' || #{loginId} || '%'
+		  </if>
+		  <if test="userName != null and userName != ''">
+		   <!-- AND USER_NAME LIKE '%' || #{userName} || '%' -->
+		  </if>
+		  <if test="useYn != null and useYn != ''">
+		   <!-- AND USE_YN = #{useYn} -->
+		  </if>
+		<!-- SQL ID: CommonUserMapper.selectCommonUserList 사용자관리 조회 끝 -->
   </select>
 
+  <insert id="insertCsys130Q01" parameterType="com.averedu.averedu_sehan.prj.sys.vo.Csys130VO">
+		<!-- SQL ID: CommonUserMapper.insertCsys130Q01 사용자관리 등록 시작 -->
+		INSERT
+		  INTO COM.CSYS130
+		     ( LOGIN_ID           /* 로그인ID */
+			   , PWD                /* 비밀번호 */
+			   , FRST_INPUT_ID      /* 최초입력자ID */
+         , FRST_INPUT_DT      /* 최초입력일시 */
+         , FRST_INPUT_MENU_ID /* 최초입력메뉴ID */
+         , FRST_INPUT_IP      /* 최초입력IP */
+         , LAST_MODF_ID       /* 최종수정입력자ID */
+         , LAST_MODF_DT       /* 최종수정일시 */
+         , LAST_MODF_MENU_ID  /* 최종수정메뉴ID */
+         , LAST_MODF_IP       /* 최종수정IP */
+			   )
+		VALUES
+		     ( #{loginId} /* 로그인ID */
+			   , #{pwd}     /* 비밀번호 */
+			   , 'ADMIN'    /* 최초입력자ID */
+			   , SYSDATE    /* 최초입력일시 */
+			   , 'ADMIN'    /* 최초입력메뉴ID */
+			   , 'ADMIN'    /* 최초입력IP */
+			   , 'ADMIN'    /* 최종수정입력자ID */
+			   , SYSDATE    /* 최종수정일시 */
+			   , 'ADMIN'    /* 최종수정메뉴ID */
+			   , 'ADMIN'    /* 최종수정IP */
+			   )
+		<!-- SQL ID: CommonUserMapper.insertCsys130Q01 사용자관리 등록 끝 -->
+  </insert>
+
+  <update id="updateCsys130Q01" parameterType="com.averedu.averedu_sehan.prj.sys.vo.Csys130VO">
+		<!-- SQL ID: CommonUserMapper.updateCsys130Q01 사용자관리 수정 시작 -->
+		UPDATE CSYS130
+		   SET PWD               = #{pwd}  /* 비밀번호 */
+		     , LAST_MODF_ID      = 'ADMIN' /* 최종수정입력자ID */
+         , LAST_MODF_DT      = SYSDATE /* 최종수정일시 */
+         , LAST_MODF_MENU_ID = 'ADMIN' /* 최종수정메뉴ID */
+         , LAST_MODF_IP      = 'ADMIN' /* 최종수정IP */
+		 WHERE LOGIN_ID = #{loginId}
+		<!-- SQL ID: CommonUserMapper.updateCsys130Q01 사용자관리 수정 끝 -->
+  </update>
+
+  <delete id="deleteCsys130Q01" parameterType="com.averedu.averedu_sehan.prj.sys.vo.Csys130VO">
+		<!-- SQL ID: CommonUserMapper.deleteCsys130Q01 사용자관리 삭제 시작 -->
+		DELETE
+		  FROM CSYS130
+		 WHERE LOGIN_ID = #{loginId}
+		<!-- SQL ID: CommonUserMapper.deleteCsys130Q01 사용자관리 삭제 끝 -->
+  </delete>
+  
 </mapper>
