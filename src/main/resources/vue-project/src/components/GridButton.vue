@@ -25,39 +25,25 @@ import BaseButton from './BaseButton.vue'
 
 const emit = defineEmits(['update:rowData', 'add-row', 'save-data', 'delete-item', 'download-excel'])
 
-// =======================[Props 정의]=======================
 const props = defineProps({
-  featureAuth: { type: String, required: true }, // CUDE 문자열 (권한)
+  featureAuth: {
+    type: Object,
+    required: true,
+    // { add: true, delete: true, save: true, download: true }
+  },
 })
 
-// =======================[상태 및 권한 체크]=======================
-const isAddRowInProgress = ref(false) // 행 추가 중 여부
+const isAddRowInProgress = ref(false)
 
-// 각 버튼의 권한 여부 계산
-const canCreate = computed(() => props.featureAuth.includes('C'))
-const canUpdate = computed(() => props.featureAuth.includes('U'))
-const canDelete = computed(() => props.featureAuth.includes('D'))
-const canExcel = computed(() => props.featureAuth.includes('E'))
+const canCreate = computed(() => props.featureAuth.add)
+const canUpdate = computed(() => props.featureAuth.save)
+const canDelete = computed(() => props.featureAuth.delete)
+const canExcel = computed(() => props.featureAuth.download)
 
-// =======================[행 추가 기능]=======================
-const addItem = () => {
-  emit('add-item')
-}
-
-// =======================[삭제 기능]=======================
-const deleteItem = () => {
-  emit('delete-item')
-}
-
-// =======================[저장 기능]=======================
-const saveData = () => {
-  emit('save-data')
-}
-
-// =======================[엑셀 다운로드 기능]=======================
-const downloadExcel = () => {
-  emit('download-excel')
-}
+const addItem = () => emit('add-item')
+const deleteItem = () => emit('delete-item')
+const saveData = () => emit('save-data')
+const downloadExcel = () => emit('download-excel')
 </script>
 
 <style scoped>

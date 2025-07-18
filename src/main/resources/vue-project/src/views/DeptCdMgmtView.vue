@@ -1,409 +1,79 @@
 <template>
-  <div class="flex-1 overflow-y-auto p-6">
-    <SearchBox
-      :onSearch="search"
-      v-model="param"
-      :items="[
-        { name: 'deptNm', label: '부서명', type: 'text' },
-        { name: 'deptCd', label: '부서코드', type: 'text' },
-        { name: 'deptId', label: '부서ID', type: 'text' },
-        { name: 'useYn', label: '사용여부', type: 'select', options: useYnOptions },
-        { name: 'breuFg', label: '기관구분', type: 'select', options: ynOptions },
-        { name: 'flDeptYn', label: '최종조직여부', type: 'select', options: ynOptions },
-        { name: 'shafFormaYn', label: '학사조직여부', type: 'select', options: ynOptions }
-      ]"
-    />
-    <div
-      class="mt-4 bg-white dark:bg-[#252731] p-6 rounded-lg shadow-md md:col-span-1 whitespace-nowrap overflow-x-auto relative"
-    >
-      <h2 class="text-xl font-semibold leading-tight text-gray-700">부서목록</h2>
-      <br />
-      <div class="flex-auto w-2/4">
-        <ag-grid-vue
-          :columnDefs="mainColumnDefs"
-          :rowData="mainRowData"
-          @cell-clicked="onCellClicked"
-          @grid-ready="onGridReady"
-          :gridOptions="gridOptions"
-          style="width: 72%; height: 600px"
-        ></ag-grid-vue>
+  <div class="h-full flex flex-col overflow-y-auto p-6">
+    <SearchBox :autoSearch="false" :onSearch="search" :items="condItems" v-model="param" />
+    <div class="section flex flex-row min-h-0 whitespace-nowrap overflow-x-auto">
+      <div id="section-left" class="w-1/3 min-w-[350px] flex flex-col pr-6 h-full">
+        <div class="section-header">
+          <h2 class="section-title">부서목록</h2>
+          <GridButton
+            :featureAuth="deptListFeatureAuth"
+            @add-row="mainGridAdd()"
+            @delete-item="deleteItemMain"
+            @save-data="saveDataMain"
+            @download-excel="downloadExcelMain"
+          />
+        </div>
+        <div id="mainGrid" class="section-grid">
+          <ag-grid-vue
+            :columnDefs="mainColumnDefs"
+            :rowData="mainRowData"
+            @cell-clicked="onCellClicked"
+            @grid-ready="onGridReady"
+            :gridOptions="gridOptions"
+            style="width: 100%; height: 100%"
+          ></ag-grid-vue>
+        </div>
       </div>
-      <div
-        class="bg-white dark:bg-[#252731] h-32 p-6 rounded-lg shadow-md md:col-span-1 text-1xl font-semibold mb-4 text-gray-800 dark:text-white flex-auto w-2/4 h-2/3 float-right relative"
-        style="top: -640px; left: -2%; width: 60%; height: 50%"
-      >
-        <h1>
-          부서정보
-          <strong class="float-right">총 : {{ mainRowData.length }} 건</strong>
-          <div class="float-right">
-            <ButtonTest
-              @add-row="mainGridAdd()"
-              @delete-item="deleteItemMain"
-              @save-data="saveDataMain"
-              @download-excel="downloadExcelMain"
-            />
+      <div id="section-right" class="w-2/3 flex flex-col min-h-0 h-full">
+        <div>
+          <div class="section-header">
+            <h2 class="section-title">부서정보</h2>
           </div>
-        </h1>
-        <br /><br />
-        <label class="p-1"
-          >부서코드<input
-            v-model="deptDetaInfo.deptCd"
-            type="text"
-            class="mx-3 bg-gray-50 border border-gray-300 text-gray-900 w-24"
-        /></label>
-        <label class="p-1"
-          >상위부서<input
-            v-model="deptDetaInfo.upDeptCd"
-            type="text"
-            class="mx-3 bg-gray-50 border border-gray-300 text-gray-900 w-24"
-        /></label>
-        <label class="p-1"
-          >사용여부<input
-            v-model="deptDetaInfo.useYn"
-            type="checkbox"
-            class="mx-3 bg-gray-50 border border-gray-300 text-gray-900 w-8" /></label
-        ><br />
-
-        <label class="p-1"
-          >기관구분<select
-            name=""
-            v-model="deptDetaInfo.breuFg"
-            class="mx-3 bg-gray-50 border border-gray-300 text-gray-900 w-32"
-          >
-            <option value=""></option>
-            <option value="Y">기관</option>
-            <option value="N">미기관</option>
-          </select></label
-        >
-        <label class="p-1"
-          >조직유형<select
-            name=""
-            v-model="deptDetaInfo.formaTyp"
-            class="mx-3 bg-gray-50 border border-gray-300 text-gray-900 w-32"
-          >
-            <option value=""></option>
-            <option value="Y">조직</option>
-            <option value="N">미조직</option>
-          </select></label
-        >
-        <label class="p-1"
-          >학사조직여부<input
-            v-model="deptDetaInfo.shafFormaYn"
-            type="checkbox"
-            class="mx-3 bg-gray-50 border border-gray-300 text-gray-900 w-8" /></label
-        ><br />
-        <label class="p-1"
-          >부서명<input
-            v-model="deptDetaInfo.deptNm"
-            type="text"
-            class="mx-3 bg-gray-50 border border-gray-300 text-gray-900 w-32"
-        /></label>
-        <label class="p-1"
-          >부서약어명<input
-            v-model="deptDetaInfo.deptAbbnm"
-            type="text"
-            class="mx-3 bg-gray-50 border border-gray-300 text-gray-900 w-32"
-        /></label>
-        <label class="p-1"
-          >가상조직여부<input
-            v-model="deptDetaInfo.cyberFormaYn"
-            type="checkbox"
-            class="mx-3 bg-gray-50 border border-gray-300 text-gray-900 w-8" /></label
-        ><br />
-        <label class="p-1"
-          >부서영문명<input
-            v-model="deptDetaInfo.deptEngNm"
-            type="text"
-            class="mx-3 bg-gray-50 border border-gray-300 text-gray-900 w-24"
-        /></label>
-        <label class="p-1"
-          >부서영문약어명<input
-            v-model="deptDetaInfo.deptEngAbbNm"
-            type="text"
-            class="mx-3 bg-gray-50 border border-gray-300 text-gray-900 w-24"
-        /></label>
-        <label class="p-1"
-          >최종조직여부<input
-            v-model="deptDetaInfo.flDeptYn"
-            type="checkbox"
-            class="mx-3 bg-gray-50 border border-gray-300 text-gray-900 w-8" /></label
-        ><br />
-        <label class="p-1"
-          >부서중문명<input
-            v-model="deptDetaInfo.deptChnNm"
-            type="text"
-            class="mx-3 bg-gray-50 border border-gray-300 text-gray-900 w-24"
-        /></label>
-        <label class="p-1"
-          >부서중문약어명<input
-            v-model="deptDetaInfo.deptChnAbbNm"
-            type="text"
-            class="mx-3 bg-gray-50 border border-gray-300 text-gray-900 w-24"
-        /></label>
-        <label class="p-1"
-          >부서ID<input
-            v-model="deptDetaInfo.deptId"
-            type="text"
-            class="mx-3 bg-gray-50 border border-gray-300 text-gray-900 w-32" /></label
-        ><br />
-        <label class="p-1"
-          >생성일자<input
-            v-model="deptDetaInfo.frDt"
-            type="date"
-            class="mx-3 bg-gray-50 border border-gray-300 text-gray-900 w-32"
-        /></label>
-        <label class="p-1"
-          >대학(처)<input
-            v-model="deptDetaInfo.colgNm"
-            type="text"
-            class="mx-3 bg-gray-50 border border-gray-300 text-gray-900 w-32"
-        /></label>
-        <label class="p-1"
-          >주야구분<select
-            name=""
-            v-model="deptDetaInfo.danFg"
-            class="mx-3 bg-gray-50 border border-gray-300 text-gray-900 w-32"
-          >
-            <option value=""></option>
-            <option value="Y">주간</option>
-            <option value="N">야간</option>
-          </select></label
-        ><br />
-        <label class="p-1"
-          >폐지일자<input
-            v-model="deptDetaInfo.ablnDt"
-            type="date"
-            class="mx-3 bg-gray-50 border border-gray-300 text-gray-900 w-32"
-        /></label>
-        <label class="p-1"
-          >학부(팀)<input
-            v-model="deptDetaInfo.sustTeamNm"
-            type="text"
-            class="mx-3 bg-gray-50 border border-gray-300 text-gray-900 w-32"
-        /></label>
-        <label class="p-1"
-          >부서정렬순번<input
-            v-model="deptDetaInfo.deptSortSeq"
-            type="text"
-            class="mx-3 bg-gray-50 border border-gray-300 text-gray-900 w-24" /></label
-        ><br />
-        <label class="p-1"
-          >폐지예정일자<input
-            v-model="deptDetaInfo.ablnExpcDt"
-            type="date"
-            class="mx-3 bg-gray-50 border border-gray-300 text-gray-900 w-32"
-        /></label>
-        <label class="p-1"
-          >부총장조직코드<select
-            name=""
-            v-model="deptDetaInfo.subChancMissCd"
-            class="mx-3 bg-gray-50 border border-gray-300 text-gray-900 w-24"
-          >
-            <option value=""></option>
-            <option value="Y">기관</option>
-            <option value="N">미기관</option>
-          </select></label
-        >
-        <label class="p-1"
-          >비고<input
-            v-model="deptDetaInfo.remk"
-            type="text"
-            class="mx-3 bg-gray-50 border border-gray-300 text-gray-900 w-24"
-        /></label>
-      </div>
-
-      <div
-        class="bg-white dark:bg-[#252731] h-32 p-6 rounded-lg shadow-md md:col-span-1 text-1xl font-semibold mb-4 text-gray-800 dark:text-white flex-auto w-2/4 h-2/3 float-right relative"
-        style="top: -640px; left: -30px; width: 60%; height: 50%"
-      >
-        <h1>부서코드 연계정보</h1>
-        <br />
-        <label class="p-1"
-          >증명서부서명<input
-            v-model="deptDetaInfo.certDeptNm"
-            type="text"
-            class="mx-3 bg-gray-50 border border-gray-300 text-gray-900 w-24"
-        /></label>
-        <label class="p-1"
-          >주간학과코드<input
-            v-model="deptDetaInfo.daytmSustCd"
-            type="text"
-            class="mx-3 bg-gray-50 border border-gray-300 text-gray-900 w-24"
-        /></label>
-        <label class="p-1"
-          >정보공시계열<select
-            name=""
-            v-model="deptDetaInfo.infoAnncPart"
-            class="mx-3 bg-gray-50 border border-gray-300 text-gray-900 w-24"
-          >
-            <option value=""></option>
-            <option value="Y">기관</option>
-            <option value="N">미기관</option>
-          </select></label
-        ><br />
-        <label class="p-1"
-          >학사학위<select
-            name=""
-            v-model="deptDetaInfo.shafDegr"
-            class="mx-3 bg-gray-50 border border-gray-300 text-gray-900 w-32"
-          >
-            <option value=""></option>
-            <option value="Y">학사</option>
-            <option value="N">미학사</option>
-          </select></label
-        >
-        <label class="p-1"
-          >석사학위<select
-            name=""
-            v-model="deptDetaInfo.masterDegr"
-            class="mx-3 bg-gray-50 border border-gray-300 text-gray-900 w-32"
-          >
-            <option value=""></option>
-            <option value="Y">석사</option>
-            <option value="N">미석사</option>
-          </select></label
-        >
-        <label class="p-1"
-          >박사학위<select
-            name=""
-            v-model="deptDetaInfo.phdDegr"
-            class="mx-3 bg-gray-50 border border-gray-300 text-gray-900 w-32"
-          >
-            <option value=""></option>
-            <option value="Y">박사</option>
-            <option value="N">미박사</option>
-          </select></label
-        ><br />
-        <label class="p-1"
-          >전공분류<select
-            name=""
-            v-model="deptDetaInfo.mjClsf"
-            class="mx-3 bg-gray-50 border border-gray-300 text-gray-900 w-32"
-          >
-            <option value=""></option>
-            <option value="Y">전공</option>
-            <option value="N">미전공</option>
-          </select></label
-        >
-        <label class="p-1"
-          >연계전공<input
-            v-model="deptDetaInfo.connMj"
-            type="text"
-            class="mx-3 bg-gray-50 border border-gray-300 text-gray-900 w-32"
-        /></label>
-        <label class="p-1"
-          >업적계열<select
-            name=""
-            v-model="deptDetaInfo.achvPart"
-            class="mx-3 bg-gray-50 border border-gray-300 text-gray-900 w-32"
-          >
-            <option value=""></option>
-            <option value="Y">업적</option>
-            <option value="N">미업적</option>
-          </select></label
-        ><br />
-        <label class="p-1"
-          >등록계열<input
-            v-model="deptDetaInfo.regPart"
-            type="text"
-            class="mx-3 bg-gray-50 border border-gray-300 text-gray-900 w-32"
-        /></label>
-        <label class="p-1"
-          >졸업학위증출력명<input
-            v-model="deptDetaInfo.grdtDegrIdcdPrnNm"
-            type="text"
-            class="mx-3 bg-gray-50 border border-gray-300 text-gray-900 w-24"
-        /></label>
-        <label class="p-1"
-          >수업년한<input
-            v-model="deptDetaInfo.lsnYr"
-            type="text"
-            class="mx-3 bg-gray-50 border border-gray-300 text-gray-900 w-24" /></label
-        ><br />
-        <label class="p-1"
-          >업적심사대학<select
-            name=""
-            v-model="deptDetaInfo.achvScrnUniv"
-            class="mx-3 bg-gray-50 border border-gray-300 text-gray-900 w-32"
-          >
-            <option value=""></option>
-            <option value="Y">업적심사</option>
-            <option value="N">미심사</option>
-          </select></label
-        >
-        <label class="p-1"
-          >대학원분류<select
-            name=""
-            v-model="deptDetaInfo.grscClsf"
-            class="mx-3 bg-gray-50 border border-gray-300 text-gray-900 w-32"
-          >
-            <option value=""></option>
-            <option value="Y">분류</option>
-            <option value="N">미분류</option>
-          </select></label
-        >
-        <label class="p-1"
-          >학부(과)<input
-            v-model="deptDetaInfo.sustNm"
-            type="text"
-            class="mx-3 bg-gray-50 border border-gray-300 text-gray-900 w-24" /></label
-        ><br />
-        <label class="p-1"
-          >그룹웨어부서연계여부<input
-            v-model="deptDetaInfo.gwDeptConnYn"
-            type="checkbox"
-            class="mx-3 bg-gray-50 border border-gray-300 text-gray-900 w-8"
-        /></label>
-        <label class="p-1"
-          >교원그룹웨어부서코드<input
-            v-model="deptDetaInfo.sprfGwDeptCd"
-            type="text"
-            class="mx-3 bg-gray-50 border border-gray-300 text-gray-900 w-24" /></label
-        ><br />
-        <label class="p-1"
-          >직원그룹웨어부서코드<input
-            v-model="deptDetaInfo.empGwDeptCd"
-            type="check"
-            class="mx-3 bg-gray-50 border border-gray-300 text-gray-900 w-24"
-        /></label>
-      </div>
-      <div
-        class="bg-white dark:bg-[#252731] h-32 p-6 rounded-lg shadow-md md:col-span-1 text-1xl font-semibold mb-4 text-gray-800 dark:text-white flex-auto w-2/4 h-2/3 float-right relative"
-        style="top: -640px; left: -30px; width: 60%; height: 50%"
-      >
-        <h1>
-          부서이력목록&nbsp;&nbsp;<b class="text-sm font-light"
-            >* 부서가 통·폐합되거나 명칭 변경 등으로 신규 부서를 등록한 경우<br />&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
-            이력 관리를 위해 부서 이력 목록을 등록해주십시오.</b
-          ><br />
-          <strong class="float-right">총 : {{ subRowData.length }} 건</strong>
-          <div class="float-right">
-            <ButtonTest
+          <EntityForm :model="param" :items="deptInfoItems" @update:model="deptDetaInfo = $event" />
+        </div>
+        <div class="pt-6">
+          <div class="section-header">
+            <h2 class="section-title">부서코드 연계정보</h2>
+          </div>
+          <EntityForm :model="param" :items="deptLinkItems" @update:model="deptDetaInfo = $event" />
+        </div>
+        <div class="pt-6 pb-6">
+          <div class="section-header">
+            <h2 class="section-title">부서이력목록</h2>
+            <b class="text-sm font-light">
+              * 부서가 통·폐합되거나 명칭 변경 등으로 신규 부서를 등록한 경우<br />이력 관리를 위해
+              부서 이력 목록을 등록해주십시오.
+            </b>
+            <GridButton
+              :featureAuth="deptHistoryFeatureAuth"
               @add-row="subGridAdd()"
               @delete-item="deleteItemMain"
               @save-data="saveDataMain"
               @download-excel="downloadExcelMain"
             />
           </div>
-        </h1>
-        <br /><br /><br />
-        <ag-grid-vue
-          :columnDefs="subColumnDefs"
-          :rowData="subRowData"
-          :gridOptions="gridOptions"
-          style="width: 100%; height: 150px"
-        ></ag-grid-vue>
+          <div id="subGrid" class="section-grid">
+            <ag-grid-vue
+              :columnDefs="subColumnDefs"
+              :rowData="subRowData"
+              :gridOptions="gridOptions"
+              style="width: 100%; height: 150px"
+            ></ag-grid-vue>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </template>
+
 <script setup>
 import axios from 'axios'
 import { AllCommunityModule, ModuleRegistry, provideGlobalGridOptions } from 'ag-grid-community'
 import { AgGridVue } from 'ag-grid-vue3' // Vue3 AgGrid Component
 import { ref } from 'vue'
-import ButtonTest from '@/components/ButtonTest.vue'
 import SearchBox from '@/components/SearchBox.vue'
+import GridButton from '@/components/GridButton.vue'
+import EntityForm from '@/components/EntityForm.vue'
 
 ModuleRegistry.registerModules([AllCommunityModule])
 provideGlobalGridOptions()
@@ -412,26 +82,145 @@ provideGlobalGridOptions()
 const useYnOptions = [
   { value: '', label: '전체' },
   { value: 'Y', label: '사용' },
-  { value: 'N', label: '미사용' }
+  { value: 'N', label: '미사용' },
 ]
 const ynOptions = [
   { value: '', label: '전체' },
   { value: 'Y', label: '예' },
-  { value: 'N', label: '아니오' }
+  { value: 'N', label: '아니오' },
 ]
+
+const condItems = [
+  { name: 'deptNm', label: '부서명', type: 'text' },
+  { name: 'deptCd', label: '부서코드', type: 'text' },
+  { name: 'deptId', label: '부서ID', type: 'text' },
+  { name: 'useYn', label: '사용여부', type: 'select', options: useYnOptions },
+  { name: 'breuFg', label: '기관구분', type: 'select', options: ynOptions },
+  { name: 'flDeptYn', label: '최종조직여부', type: 'select', options: ynOptions },
+  { name: 'shafFormaYn', label: '학사조직여부', type: 'select', options: ynOptions },
+]
+
+let param = ref({
+  deptNm: '',
+  deptCd: '',
+  deptId: '',
+  useYn: '',
+  breuFg: '',
+  flDeptYn: '',
+  shafFormaYn: '',
+})
+
+// 필드 정의 배열
+const breuFgOptions = [
+  { value: '', label: '선택' },
+  { value: 'Y', label: '기관' },
+  { value: 'N', label: '미기관' },
+]
+const formaTypOptions = [
+  { value: '', label: '선택' },
+  { value: 'Y', label: '조직' },
+  { value: 'N', label: '미조직' },
+]
+const danFgOptions = [
+  { value: '', label: '선택' },
+  { value: 'Y', label: '주간' },
+  { value: 'N', label: '야간' },
+]
+const deptInfoItems = [
+  { key: 'deptCd', label: '부서코드', type: 'text' },
+  { key: 'upDeptCd', label: '상위부서', type: 'text' },
+  { key: 'useYn', label: '사용여부', type: 'checkbox' },
+  { key: 'breuFg', label: '기관구분', type: 'select', options: breuFgOptions },
+  { key: 'formaTyp', label: '조직유형', type: 'select', options: formaTypOptions },
+  { key: 'shafFormaYn', label: '학사조직여부', type: 'checkbox' },
+  { key: 'deptNm', label: '부서명', type: 'text' },
+  { key: 'deptAbbnm', label: '부서약어명', type: 'text' },
+  { key: 'cyberFormaYn', label: '가상조직여부', type: 'checkbox' },
+  { key: 'deptEngNm', label: '부서영문명', type: 'text' },
+  { key: 'deptEngAbbNm', label: '부서영문약어명', type: 'text' },
+  { key: 'flDeptYn', label: '최종조직여부', type: 'checkbox' },
+  { key: 'deptChnNm', label: '부서중문명', type: 'text' },
+  { key: 'deptChnAbbNm', label: '부서중문약어명', type: 'text' },
+  { key: 'deptId', label: '부서ID', type: 'text' },
+  { key: 'frDt', label: '생성일자', type: 'date' },
+  { key: 'colgNm', label: '대학(처)', type: 'text' },
+  { key: 'danFg', label: '주야구분', type: 'select', options: danFgOptions },
+  { key: 'ablnDt', label: '폐지일자', type: 'date' },
+  { key: 'sustTeamNm', label: '학부(팀)', type: 'text' },
+  { key: 'deptSortSeq', label: '부서정렬순번', type: 'text' },
+  { key: 'ablnExpcDt', label: '폐지예정일자', type: 'date' },
+  { key: 'subChancMissCd', label: '부총장조직코드', type: 'select', options: breuFgOptions },
+  { key: 'remk', label: '비고', type: 'text' },
+]
+
+const shafDegrOptions = [
+  { value: '', label: '선택' },
+  { value: 'Y', label: '학사' },
+  { value: 'N', label: '미학사' },
+]
+const masterDegrOptions = [
+  { value: '', label: '선택' },
+  { value: 'Y', label: '석사' },
+  { value: 'N', label: '미석사' },
+]
+const phdDegrOptions = [
+  { value: '', label: '선택' },
+  { value: 'Y', label: '박사' },
+  { value: 'N', label: '미박사' },
+]
+const mjClsfOptions = [
+  { value: '', label: '선택' },
+  { value: 'Y', label: '전공' },
+  { value: 'N', label: '미전공' },
+]
+const achvPartOptions = [
+  { value: '', label: '선택' },
+  { value: 'Y', label: '업적' },
+  { value: 'N', label: '미업적' },
+]
+const achvScrnUnivOptions = [
+  { value: '', label: '선택' },
+  { value: 'Y', label: '업적심사대학' },
+  { value: 'N', label: '미심사대학' },
+]
+const grscClsfOptions = [
+  { value: '', label: '선택' },
+  { value: 'Y', label: '대학원' },
+  { value: 'N', label: '미대학원' },
+]
+const deptLinkItems = [
+  { key: 'certDeptNm', label: '증명서부서명', type: 'text' },
+  { key: 'daytmSustCd', label: '주간학과코드', type: 'text' },
+  { key: 'infoAnncPart', label: '정보공시계열', type: 'select', options: breuFgOptions },
+  { key: 'shafDegr', label: '학사학위', type: 'select', options: shafDegrOptions },
+  { key: 'masterDegr', label: '석사학위', type: 'select', options: masterDegrOptions },
+  { key: 'phdDegr', label: '박사학위', type: 'select', options: phdDegrOptions },
+  { key: 'mjClsf', label: '전공분류', type: 'select', options: mjClsfOptions },
+  { key: 'connMj', label: '연계전공', type: 'text' },
+  { key: 'achvPart', label: '업적계열', type: 'select', options: achvPartOptions },
+  { key: 'regPart', label: '등록계열', type: 'text' },
+  { key: 'grdtDegrIdcdPrnNm', label: '졸업학위증 출력명', type: 'text' },
+  { key: 'lsnYr', label: '수업년한', type: 'text' },
+  { key: 'achvScrnUniv', label: '업적심사대학', type: 'select', options: achvScrnUnivOptions },
+  { key: 'grscClsf', label: '대학원분류', type: 'select', options: grscClsfOptions },
+  { key: 'sustNm', label: '학부(과)', type: 'text' },
+  { key: 'gwDeptConnYn', label: '그룹웨어 부서연계여부', type: 'checkbox' },
+  { key: 'sprfGwDeptCd', label: '교원그룹웨어 부서코드', type: 'text' },
+  { key: 'empGwDeptCd', label: '직원그룹웨어 부서코드', type: 'text' },
+]
+
+const deptListFeatureAuth = ref({
+  add: true,
+  delete: true,
+  save: true,
+  download: true,
+})
 
 const mainGridAdd = () => {
   const mainAddRow = {
-    status: 'N',
+    status: 'I',
   }
   mainRowData.value.unshift(mainAddRow)
-}
-
-const subGridAdd = () => {
-  const subAddRow = {
-    status: 'N',
-  }
-  subRowData.value.unshift(subAddRow)
 }
 
 const gridOptions = {
@@ -443,8 +232,8 @@ const gridOptions = {
     headerClass: 'centered',
     cellClass: 'centered',
     editable: true,
-    editType: 'fullRow',
   },
+  editType: 'fullRow',
 }
 const gridApi = ref()
 const columnApi = ref()
@@ -459,7 +248,7 @@ const mainColumnDefs = [
         return '<img src="path_to_x_image.png" alt="삭제" />'
       } else if (params.value === 'U') {
         return '<img src="path_to_u_image.png" alt="변경" />'
-      } else if (params.value === 'N') {
+      } else if (params.value === 'I') {
         return '<img src="path_to_n_image.png" alt="추가" />'
       }
       return ''
@@ -518,6 +307,20 @@ const mainColumnDefs = [
   { field: 'mjClsf', headerName: '전공분류', width: 100, hide: true },
 ]
 
+const deptHistoryFeatureAuth = ref({
+  add: true,
+  delete: true,
+  save: true,
+  download: true,
+})
+
+const subGridAdd = () => {
+  const subAddRow = {
+    status: 'I',
+  }
+  subRowData.value.unshift(subAddRow)
+}
+
 const subRowData = ref([])
 const subColumnDefs = [
   {
@@ -530,7 +333,7 @@ const subColumnDefs = [
         return '<img src="path_to_x_image.png" alt="삭제" />'
       } else if (params.value === 'U') {
         return '<img src="path_to_u_image.png" alt="변경" />'
-      } else if (params.value === 'N') {
+      } else if (params.value === 'I') {
         return '<img src="path_to_n_image.png" alt="추가" />'
       }
       return '' // 기본 값
@@ -615,16 +418,6 @@ const onCellClicked = (params) => {
   deptDetaInfo.value = params.data
 }
 
-let param = ref({
-  deptNm: '',
-  deptCd: '',
-  deptId: '',
-  useYn: '',
-  breuFg: '',
-  flDeptYn: '',
-  shafFormaYn: '',
-})
-
 const search = () => {
   mainGridCall(param)
 }
@@ -649,7 +442,6 @@ const mainGridCall = (param) => {
       console.log('mainGrid load error', error)
     })
 }
-//mainGridCall(param)
 </script>
 
 <style lang="scss" scoped></style>
