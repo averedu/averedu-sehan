@@ -8,7 +8,7 @@
       <div class="flex items-center justify-between mb-4">
         <h2 class="text-xl font-semibold leading-tight text-gray-700">프로그램 목록</h2>
         <GridButton
-          :featureAuth="featureAuth"
+          :featureAuth="programFeatureAuth"
           @add-item="addItem"
           @delete-item="deleteItem"
           @save-data="saveData"
@@ -75,7 +75,12 @@ const gridOptions = {
 }
 
 // =======================[ag-Grid API, 컬럼, 데이터 정의]=======================
-const featureAuth = 'CUD' // 권한 문자열 (예시)
+const programFeatureAuth = ref({
+  add: true,
+  delete: true,
+  save: true,
+  download: true,
+})
 const gridApi = ref()
 const columnApi = ref()
 const mainRowData = ref([])
@@ -96,7 +101,7 @@ const mainColumnDefs = [
     },
   },
   {
-    field: 'programId',
+    field: 'pgmId',
     headerName: '프로그램ID',
     width: 200,
     editable: (params) => params.data.status === 'I',
@@ -104,32 +109,64 @@ const mainColumnDefs = [
     required: true,
   },
   {
-    field: 'programNm',
+    field: 'pgmNm',
     headerName: '프로그램명',
     width: 200,
     editable: true,
     editType: 'fullRow',
     required: true,
   },
-  { field: 'pgmPathNm', headerName: '프로그램 경로명', width: 200 },
-  { field: 'pgmKndFgCd', headerName: '프로그램 종류 구분코드', width: 200 },
-  { field: 'systemFgCd', headerName: '시스템 구분코드', width: 200 },
-  { field: 'bussLclasCd', headerName: '업무 대분류 코드', width: 200 },
-  { field: 'bussMclsfCd', headerName: '업무 중분류 코드', width: 200 },
-  { field: 'useYn', headerName: '사용여부', width: 200 },
-  { field: 'sortSeq', headerName: '정렬순번', width: 200 },
+  {
+    field: 'pgmPathNm',
+    headerName: '프로그램 경로명',
+    width: 200,
+    editable: true,
+    editType: 'fullRow',
+    required: true,
+  },
+  {
+    field: 'pgmKndFgCd',
+    headerName: '프로그램 종류 구분코드',
+    width: 200,
+    editable: true,
+    editType: 'fullRow',
+    required: true,
+  },
+  {
+    field: 'systemFgCd',
+    headerName: '시스템 구분코드',
+    width: 200,
+    editable: true,
+    editType: 'fullRow',
+    required: true,
+  },
+  {
+    field: 'useYn',
+    headerName: '사용여부',
+    width: 200,
+    editable: true,
+    editType: 'fullRow',
+    required: true,
+  },
+  {
+    field: 'sortSeq',
+    headerName: '정렬순번',
+    width: 200,
+    editable: true,
+    editType: 'fullRow',
+    required: true,
+  },
 ]
-
 // =======================[사용자 상세 정보 상태]=======================
-const userDataInfo = ref({
-  status: '',
-  loginId: '',
-  pwd: '',
-  pwdErrFreq: '',
-  pwdChgDttm: '',
-  userStCd: '',
-  flLoginDttm: '',
-  persNo: '',
+const programDataInfo = ref({
+  status: 'I',
+  pgmId: '',
+  pgmNm: '',
+  pgmPathNm: '',
+  pgmKndFgCd: '',
+  systemFgCd: '',
+  useYn: '',
+  sortSeq: '',
 })
 
 // =======================[ag-Grid 이벤트 핸들러]=======================
@@ -142,7 +179,7 @@ const onGridReady = (params) => {
 
 const onCellClicked = (params) => {
   console.log('cell click : ', params.data)
-  userDataInfo.value = params.data
+  programDataInfo.value = params.data
 }
 
 const onCellValueChanged = (params) => {
@@ -164,7 +201,7 @@ const search = () => {
   console.log('obj : ', obj)
 
   axios
-    .post('/restApi/prj/sys/commonUser/selectCommonUserList.do', obj)
+    .post('/restApi/prj/sys/selectCommonProgramList', obj)
     .then((restApi) => {
       console.log('restApi : ', restApi)
       if (restApi.status === 200) {
@@ -180,13 +217,13 @@ const search = () => {
 // =======================[행 추가 함수]=======================
 const defaultUserRow = {
   status: 'I',
-  loginId: '',
-  pwd: '',
-  pwdErrFreq: '',
-  pwdChgDttm: '',
-  userStCd: '',
-  flLoginDttm: '',
-  persNo: '',
+  pgmId: '자동채번',
+  pgmNm: '',
+  pgmPathNm: '',
+  pgmKndFgCd: '',
+  systemFgCd: '',
+  useYn: '',
+  sortSeq: 0,
 }
 
 const addItem = () => {
@@ -200,22 +237,22 @@ const deleteItem = () => {
     console.error('삭제할 행을 선택해주세요.')
     return
   }
-  const selectedIds = selectedNodes.map((node) => node.data.loginId)
+  const selectedIds = selectedNodes.map((node) => node.data.pgmId)
   mainRowData.value = mainRowData.value.map((row) =>
-    selectedIds.includes(row.loginId) ? { ...row, status: 'D' } : row,
+    selectedIds.includes(row.pgmId) ? { ...row, status: 'D' } : row,
   )
 }
 
 // =======================[저장 기능]=======================
 const sanitizeRow = (row) => ({
   ...row,
-  loginId: row.loginId ?? '',
-  pwd: row.pwd ?? '',
-  pwdErrFreq: row.pwdErrFreq ?? '',
-  pwdChgDttm: row.pwdChgDttm ?? '',
-  userStCd: row.userStCd ?? '',
-  flLoginDttm: row.flLoginDttm ?? '',
-  persNo: row.persNo ?? '',
+  pgmId: row.pgmId ?? '',
+  pgmNm: row.pgmNm ?? '',
+  pgmPathNm: row.pgmPathNm ?? '',
+  pgmKndFgCd: row.pgmKndFgCd ?? '',
+  systemFgCd: row.systemFgCd ?? '',
+  bussLclasCd: row.bussLclasCd ?? '',
+  bussMclsfCd: row.bussMclsfCd ?? '',
 })
 
 const saveData = () => {
@@ -240,7 +277,7 @@ const saveData = () => {
   console.log('저장할 데이터:', saveRows)
 
   axios
-    .post('/restApi/prj/sys/commonUser/saveCommonUserList.do', saveRows)
+    .post('/restApi/prj/sys/saveCommonProgramList', saveRows)
     .then((response) => {
       if (response.status === 200) {
         console.log(response.data || '저장 성공')
