@@ -1,8 +1,8 @@
-package com.averedu.averedu_sehan.mapper.login;
+package com.averedu.averedu_sehan.prj.sys.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
 
-import com.averedu.averedu_sehan.vo.user.UserVO;
+import com.averedu.averedu_sehan.prj.sys.vo.UserVO;
 
 @Mapper
 public interface LoginMapper {

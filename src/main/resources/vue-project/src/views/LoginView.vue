@@ -103,7 +103,7 @@ const loginFun = () => {
   const obj = Object.assign({}, login.value)
 
   axios
-    .post('/restApi/login', obj)
+    .post('/restApi/prj/sys/login', obj)
     .then((restApi) => {
       console.log('restApi : ', restApi)
       if (restApi.data.statusCd === 50) {

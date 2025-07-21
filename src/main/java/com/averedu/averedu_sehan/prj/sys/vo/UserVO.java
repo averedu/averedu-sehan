@@ -1,7 +1,8 @@
-package com.averedu.averedu_sehan.vo.user;
+package com.averedu.averedu_sehan.prj.sys.vo;
+
+import com.averedu.averedu_sehan.prj.com.vo.StatusVO;
 
 import lombok.Data;
-import com.averedu.averedu_sehan.vo.com.StatusVO;
 
 @Data
 public class UserVO extends StatusVO{

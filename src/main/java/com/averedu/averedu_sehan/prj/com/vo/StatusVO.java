@@ -1,4 +1,4 @@
-package com.averedu.averedu_sehan.vo.com;
+package com.averedu.averedu_sehan.prj.com.vo;
 
 import lombok.Data;
 

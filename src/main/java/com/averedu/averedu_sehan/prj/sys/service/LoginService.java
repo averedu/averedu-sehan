@@ -1,19 +1,17 @@
-package com.averedu.averedu_sehan.impl.login;
+package com.averedu.averedu_sehan.prj.sys.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.averedu.averedu_sehan.mapper.login.LoginMapper;
-import com.averedu.averedu_sehan.service.login.LoginService;
-import com.averedu.averedu_sehan.vo.user.UserVO;
+import com.averedu.averedu_sehan.prj.sys.mapper.LoginMapper;
+import com.averedu.averedu_sehan.prj.sys.vo.UserVO;
 
 @Service
-public class LoginImpl implements LoginService{
+public class LoginService{
 	
 	@Autowired
 	private LoginMapper loginMapper;
 	
-	@Override
 	public UserVO login(UserVO userVO) {
 		UserVO loginVO = loginMapper.login(userVO);
 
