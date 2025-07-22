@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.averedu.averedu_sehan.prj.sys.mapper.CommonMenuMapper">
+
+    <select id="selectCommonMenuList" resultType="com.averedu.averedu_sehan.prj.sys.vo.Csys210VO" parameterType="map">
+    SELECT
+      	A.PGM_ID,
+      	A.PGM_NM,
+      	B.MENU_ID,
+		B.MENU_NM,
+		A.PGM_PATH_NM,
+		B.SORT_SEQ
+	FROM COM.CSYS200 A
+	INNER JOIN(SELECT
+			B.PGM_ID,
+			B.MENU_ID,
+			B.MENU_NM,
+			B.SORT_SEQ
+		   FROM COM.CSYS210 B) B 
+	ON(A.PGM_ID = B.PGM_ID)
+	WHERE 1=1 
+	AND A.PGM_KND_FG_CD = '2'
+	<if test="menuId != null and menuId != ''">
+		AND MENU_ID LIKE '%' || #{menuId} || '%'
+	</if>
+	<if test="menuNm != null and menuNm != ''">
+		AND MENU_NM LIKE '%' || #{menuNm} || '%'
+	</if>
+	<if test="pgmPathNm != null and pgmPathNm != ''">
+		AND PGM_PATH_NM LIKE '%' || #{pgmPathNm} || '%'
+	</if>
+ 	</select>
+ 	
+ 	<select id="menuKeyCode" resultType="string">
+ 		SELECT 'M' || LPAD(TO_NUMBER(SUBSTR(MAX(MENU_ID), 2, 7)) + 1, 6, 0) AS KEY_CODE
+      	FROM COM.CSYS210
+ 	</select>
+ 	
+ 	<insert id="insertMenu" parameterType="com.averedu.averedu_sehan.prj.sys.vo.Csys210VO">
+  	INSERT INTO COM.CSYS210(
+  		 PGM_ID /* 프로그램ID */
+		,MENU_ID /* 메뉴ID */
+		,MENU_NM /* 메뉴명 */
+    	,SORT_SEQ /* 정렬순서 */
+		,FRST_INPUT_ID      /* 최초입력자ID */
+    	,FRST_INPUT_DT      /* 최초입력일시 */
+    	,FRST_INPUT_MENU_ID /* 최초입력메뉴ID */
+    	,FRST_INPUT_IP      /* 최초입력IP */
+   	 	,LAST_MODF_ID       /* 최종수정입력자ID */
+    	,LAST_MODF_DT       /* 최종수정일시 */
+    	,LAST_MODF_MENU_ID  /* 최종수정메뉴ID */
+    	,LAST_MODF_IP       /* 최종수정IP */
+	)VALUES
+		(#{pgmId} /* 프로그램ID */
+		,#{menuId} /* 메뉴ID */
+		,#{menuNm} /* 메뉴명 */   
+		,#{sortSeq} /* 정렬순서 */
+		,'ADMIN'    /* 최초입력자ID */
+		,SYSDATE    /* 최초입력일시 */
+		,'ADMIN'    /* 최초입력메뉴ID */
+		,'ADMIN'    /* 최초입력IP */
+		,'ADMIN'    /* 최종수정입력자ID */
+		,SYSDATE    /* 최종수정일시 */
+		,'ADMIN'    /* 최종수정메뉴ID */
+		,'ADMIN'    /* 최종수정IP */
+	)
+  </insert>
+  
+  <update id="updateMenu" parameterType="com.averedu.averedu_sehan.prj.sys.vo.Csys210VO">
+  	UPDATE CSYS210
+		   SET	  PGM_ID = #{pgmId}
+				, MENU_NM = #{menuNm}
+				, SORT_SEQ = #{sortSeq}
+		    	, LAST_MODF_ID = 'ADMIN' /* 최종수정입력자ID */
+         		, LAST_MODF_DT     = SYSDATE /* 최종수정일시 */
+         		, LAST_MODF_MENU_ID = 'ADMIN' /* 최종수정메뉴ID */
+         		, LAST_MODF_IP     = 'ADMIN' /* 최종수정IP */
+		 WHERE MENU_ID = #{menuId}
+  </update>
+  
+  <delete id="deleteMenu" parameterType="com.averedu.averedu_sehan.prj.sys.vo.Csys210VO">
+  	DELETE FROM CSYS210	
+	WHERE MENU_ID = #{menuId}
+  </delete>
+ 	
+ 	
+ 	
+</mapper>

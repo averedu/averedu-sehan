@@ -4,6 +4,7 @@ import MainView from '../views/MainView.vue'
 import DeptCdMgmtView from '../views/DeptCdMgmtView.vue'
 import UserMngView from '@/views/UserMngView.vue'
 import ProgramMgmtView from '../views/ProgramMgmtView.vue'
+import MenuMgmtView from '../views/MenuMgmtView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -32,6 +33,11 @@ const router = createRouter({
           path: 'programMgmt',
           name: '프로그램관리',
           component: ProgramMgmtView,
+        },
+        {
+          path: 'menuMgmt',
+          name: '메뉴관리',
+          component: MenuMgmtView,
         },
       ],
     },
