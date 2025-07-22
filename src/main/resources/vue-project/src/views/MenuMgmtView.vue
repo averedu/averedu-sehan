@@ -88,14 +88,14 @@ const mainColumnDefs = [
   {
     field: 'status',
     headerName: '상태',
-    width: 100,
+    width: 70,
     cellRenderer: (params) => {
       if (params.value === 'D') {
-        return '<img src="path_to_x_image.png" alt="삭제" />'
+        return '<img src="/main/path_to_x_image.png" style="object-fit: cover;" alt="삭제" />'
       } else if (params.value === 'U') {
-        return '<img src="path_to_u_image.png" alt="변경" />'
+        return '<img src="/main/path_to_u_image.png" alt="변경" />'
       } else if (params.value === 'I') {
-        return '<img src="path_to_n_image.png" alt="추가" />'
+        return '<img src="/main/path_to_n_image.png" alt="추가" />'
       }
       return ''
     },

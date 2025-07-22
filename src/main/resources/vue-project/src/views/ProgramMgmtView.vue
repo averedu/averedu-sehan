@@ -88,7 +88,7 @@ const mainColumnDefs = [
   {
     field: 'status',
     headerName: '상태',
-    width: 100,
+    width: 70,
     cellRenderer: (params) => {
       if (params.value === 'D') {
         return '<img src="path_to_x_image.png" alt="삭제" />'
